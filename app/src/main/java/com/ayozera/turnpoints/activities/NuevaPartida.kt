@@ -9,6 +9,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
+import androidx.compose.material3.DatePicker
+import androidx.compose.material3.DatePickerDialog
+import androidx.compose.material3.DatePickerState
+import androidx.compose.material3.DisplayMode
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Text
@@ -26,8 +32,17 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Slider
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
 import java.time.LocalDate
+import java.time.LocalDateTime
+import java.util.Calendar
+import androidx.compose.material3.DatePicker
+import androidx.compose.runtime.remember
+import androidx.compose.ui.tooling.preview.Preview
+
 
 //@Preview(showBackground = true, showSystemUi = true)
 @RequiresApi(Build.VERSION_CODES.O)
@@ -47,7 +62,10 @@ fun PantallaNueva(navController : NavHostController) {
             readOnly = true,
             trailingIcon = {
                 IconButton(onClick = { expandedPlayer = true }) {
-                    Icon(Icons.Default.ArrowDropDown, contentDescription = "abrir lista de jugadores")
+                    Icon(
+                        Icons.Default.ArrowDropDown,
+                        contentDescription = "abrir lista de jugadores"
+                    )
                 }
             }
         )
@@ -127,7 +145,7 @@ fun PantallaNueva(navController : NavHostController) {
                 }
             }
             var score by remember { mutableStateOf(0f) }
-            Text(text = "Número de puntos que metió en la partida")
+            Text(text = "Número de puntos que hizo en la partida")
             Slider(
                 value = score,
                 onValueChange = { score = it },
@@ -146,7 +164,10 @@ fun PantallaNueva(navController : NavHostController) {
                 readOnly = true,
                 trailingIcon = {
                     IconButton(onClick = { expandedPlayer2 = true }) {
-                        Icon(Icons.Default.ArrowDropDown, contentDescription = "abrir lista de jugadores")
+                        Icon(
+                            Icons.Default.ArrowDropDown,
+                            contentDescription = "abrir lista de jugadores"
+                        )
                     }
                 }
             )
@@ -165,14 +186,13 @@ fun PantallaNueva(navController : NavHostController) {
                     )
                 }
             }
-            //val datePickerState = rememberDatePickerState(initialSelectedDateMillis = System.currentTimeMillis())
-            var selectedDate by remember { mutableStateOf(LocalDate.now()) }
+            datePickerScreen()
 
-        /*    DatePicker(
-                selectedDate = selectedDate,
-                onDateSelected = { selectedDate = it }
-            )*/
-           /* DatePicker(
+            //val datePickerState = rememberDatePickerState(initialSelectedDateMillis = System.currentTimeMillis())
+            //  var selectedDate by remember { mutableStateOf(LocalDate.now()) }
+
+
+            /* DatePicker(
                 state = datePickerState,
                 onDateChanged = { date ->
                     // Handle date change
@@ -181,4 +201,28 @@ fun PantallaNueva(navController : NavHostController) {
         }
     }
 }
+
+@Preview(showSystemUi = true, showBackground = true)
+@OptIn(ExperimentalMaterial3Api::class)
+@RequiresApi(Build.VERSION_CODES.O)
+@Composable
+fun datePickerScreen() {
+
+    val dateTime = LocalDateTime.now()
+
+    val datePickerState = remember {
+        DatePickerState(
+            yearRange = (2023..2024),
+            initialSelectedDateMillis = null ,
+            initialDisplayMode = DisplayMode.Picker,
+            initialDisplayedMonthMillis = null
+        )
+    }
+
+    DatePicker(state = datePickerState)
+}
+
+
+
+
 

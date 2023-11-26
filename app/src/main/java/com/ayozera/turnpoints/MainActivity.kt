@@ -49,6 +49,7 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.ayozera.turnpoints.navegacion.Routs
 import com.ayozera.turnpoints.ui.theme.TurnpointsTheme
 import com.ayozera.turnpoints.ui.theme.Rojo
 import com.ayozera.turnpoints.ui.theme.Fondo
@@ -64,14 +65,15 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    Column(
+
+            /*        Column(
                         modifier = Modifier
                             .background(color = Fondo)
                     ) {
                         Text(text = "Bienvenido a la app para saber...")
                         searchBar()
                         playerCard()
-                    }
+                    }*/
 
 
                 }
