@@ -16,7 +16,7 @@ fun NavigationGraph() {
 
         }
         composable(Routs.NuevaPartida.rout){
-            PantallaNueva(navController = navController)
+            //PantallaNueva(navController = navController)
         }
         composable(Routs.Juego.rout){
 
