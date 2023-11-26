@@ -12,12 +12,15 @@ fun NavigationGraph() {
     val navController : NavHostController = rememberNavController()
 
     NavHost(navController = navController, startDestination = Routs.Jugadores.rout) {
+
         composable(Routs.Jugadores.rout){
 
         }
+
         composable(Routs.NuevaPartida.rout){
             PantallaNueva(navController = navController)
         }
+
         composable(Routs.Juego.rout){
 
         }
