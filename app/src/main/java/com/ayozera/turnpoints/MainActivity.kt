@@ -24,6 +24,8 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.AlertDialogDefaults.shape
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -49,6 +51,8 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
+import com.ayozera.turnpoints.activities.PantallaNueva
 import com.ayozera.turnpoints.navegacion.Routs
 import com.ayozera.turnpoints.ui.theme.TurnpointsTheme
 import com.ayozera.turnpoints.ui.theme.Rojo
@@ -66,20 +70,40 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
 
-            /*        Column(
-                        modifier = Modifier
-                            .background(color = Fondo)
-                    ) {
-                        Text(text = "Bienvenido a la app para saber...")
-                        searchBar()
-                        playerCard()
-                    }*/
-
 
                 }
+
+
             }
         }
     }
+}
+
+@Composable
+fun showMainScreen(navController: NavHostController) {
+    Column(
+        modifier = Modifier
+            .background(color = Fondo)
+    ) {
+        Text(text = "Bienvenido a la app para saber...")
+        searchBar()
+        playerCard()
+        Button(onClick = { navController.navigate(Routs.NuevaPartida.rout) },colors = ButtonDefaults.buttonColors(
+            containerColor = Color.Blue
+        ),
+            modifier = Modifier.padding(16.dp)
+        ) {
+            Text(
+                text = "Mostrar pantalla Nueva",
+                style = TextStyle(
+                    fontSize = 20.sp,
+                    color = Color.White
+                )
+            )
+
+        }
+    }
+
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
