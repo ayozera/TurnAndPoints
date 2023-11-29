@@ -24,6 +24,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowForward
+import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.AlertDialogDefaults.shape
 import androidx.compose.material3.Button
@@ -31,7 +32,9 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SearchBar
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -45,6 +48,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.modifier.modifierLocalMapOf
 import androidx.compose.ui.res.painterResource
@@ -89,9 +93,11 @@ fun showMainScreen(navController: NavHostController) {
         Text(text = "Bienvenido a la app para saber...")
         searchBar()
         playerCard()
-        Button(onClick = { navController.navigate(Routs.NuevaPartida.rout) },colors = ButtonDefaults.buttonColors(
-            containerColor = Color.Blue
-        ),
+        Button(
+            onClick = { navController.navigate(Routs.NuevaPartida.rout) },
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Color.Blue
+            ),
             modifier = Modifier.padding(16.dp)
         ) {
             Text(
@@ -108,18 +114,36 @@ fun showMainScreen(navController: NavHostController) {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun searchBar() {
-    TextField(
-        value = "",
-        onValueChange = { },
-        modifier = Modifier.fillMaxWidth(),
-        placeholder = { Text("¿De qué fue el juego?") },
-        leadingIcon = { // Añade un icono al inicio del TextField
+    var searchBarPlaceHolder by remember { mutableStateOf("¿De qué fue el juego?") }
+    var query by remember { mutableStateOf("") }
+    SearchBar(
+        query = query,
+        onQueryChange = { newQuery -> query = newQuery },
+        onSearch = {},
+        active = false,
+        onActiveChange = {},
+        placeholder = { Text(searchBarPlaceHolder) },
+        leadingIcon = {
             Icon(
                 imageVector = Icons.Filled.Search,
-                contentDescription = "Buscar"
+                contentDescription = "Icono para buscar"
             )
-        }
-    )
+        },
+        trailingIcon = {
+            IconButton(onClick = {
+                query = ""
+            }) {
+                Icon(
+                    imageVector = Icons.Filled.Clear,
+                    contentDescription = "Icono para borrar lo escrito"
+                )
+            }
+        },
+        modifier = Modifier.fillMaxWidth(),
+        shape = RectangleShape
+    ) {
+
+    }
 }
 
 //@Preview(showBackground = true, showSystemUi = true)
@@ -133,7 +157,7 @@ fun playerCard() {
     ) {
         Row(
             modifier = Modifier
-                .background(color = Rojo, shape = RoundedCornerShape(16.dp))
+                .background(color = Rojo)
                 .fillMaxWidth()
                 .padding(10.dp),
             horizontalArrangement = Arrangement.SpaceEvenly
