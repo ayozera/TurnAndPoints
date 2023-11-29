@@ -74,10 +74,7 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
                     NavigationGraph()
-
                 }
-
-
             }
         }
     }
@@ -104,10 +101,8 @@ fun showMainScreen(navController: NavHostController) {
                     color = Color.White
                 )
             )
-
         }
     }
-
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
