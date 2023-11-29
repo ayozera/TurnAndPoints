@@ -129,6 +129,7 @@ fun searchBar() {
                 contentDescription = "Icono para buscar"
             )
         },
+
         trailingIcon = {
             IconButton(onClick = {
                 query = ""
