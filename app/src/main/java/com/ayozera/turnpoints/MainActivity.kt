@@ -1,9 +1,11 @@
 package com.ayozera.turnpoints
 
+import android.os.Build
 import android.os.Bundle
 import android.text.style.BackgroundColorSpan
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -53,6 +55,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.ayozera.turnpoints.activities.PantallaNueva
+import com.ayozera.turnpoints.navegacion.NavigationGraph
 import com.ayozera.turnpoints.navegacion.Routs
 import com.ayozera.turnpoints.ui.theme.TurnpointsTheme
 import com.ayozera.turnpoints.ui.theme.Rojo
@@ -60,6 +63,7 @@ import com.ayozera.turnpoints.ui.theme.Fondo
 
 
 class MainActivity : ComponentActivity() {
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -69,7 +73,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-
+                    NavigationGraph()
 
                 }
 

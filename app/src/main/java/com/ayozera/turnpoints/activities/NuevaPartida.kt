@@ -2,6 +2,7 @@ package com.ayozera.turnpoints.activities
 
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -27,6 +28,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Slider
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import java.time.LocalDateTime
@@ -42,7 +44,10 @@ fun PantallaNueva(navController: NavHostController) {
     var expandedPlayer by remember { mutableStateOf(false) }
     var selectedPlayer by remember { mutableStateOf(players.first()) }
 
-    Column {
+    Column (
+        verticalArrangement = Arrangement.SpaceEvenly,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ){
         Text(text = "Introduce el nombre del jugador")
         TextField(
             value = selectedPlayer,
