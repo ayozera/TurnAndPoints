@@ -44,6 +44,7 @@ import java.time.LocalDateTime
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavHostController
 import com.ayozera.turnpoints.modelo.DataUp
+import com.ayozera.turnpoints.modelo.DataUp.Companion.gameLoader
 import com.ayozera.turnpoints.modelo.Match
 import java.time.Instant
 import java.time.LocalDate
@@ -54,9 +55,10 @@ import java.time.ZoneId
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun PantallaNueva(navController: NavHostController) {
+    val context = LocalContext.current
     val players = listOf("Player 1", "Player 2", "Player 3")
-    val games = listOf("Juego 1", "Juego 2", "Juego 3")
-    val gameTypes = listOf("Type 1", "Type 2", "Type 3")
+    val games = gameLoader(context)
+    val gameTypes = listOf("Tablero", "Economía", "Estrategia", "Competitivo", "Colaborativo")
     var player = ""
     var game = ""
     var type = ""
@@ -65,7 +67,7 @@ fun PantallaNueva(navController: NavHostController) {
     var day = 0
     var month = 0
     var year = 0
-    val context = LocalContext.current
+
 
     Column(
         verticalArrangement = Arrangement.SpaceEvenly,
@@ -151,7 +153,7 @@ fun PlayerSelection(players: List<String>, onPlayerSelection: (String) -> Unit) 
 }
 
 @Composable
-fun GameSelection(games: List<String>, onGameSelection: (String) -> Unit) {
+fun GameSelection(games: ArrayList<String>, onGameSelection: (String) -> Unit) {
     var expandedGame by remember { mutableStateOf(false) }
     var selectedGame by remember { mutableStateOf(games.first()) }
     Column {
