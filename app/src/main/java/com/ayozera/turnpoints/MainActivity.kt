@@ -19,6 +19,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -37,6 +39,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SearchBar
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -114,14 +117,48 @@ fun showMainScreen(navController: NavHostController) {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun searchBar() {
-    var searchBarPlaceHolder by remember { mutableStateOf("¿De qué fue el juego?") }
+    val games = listOf(
+        "Ajedrez",
+        "Damas",
+        "Backgammon",
+        "Monopoly",
+        "Scrabble",
+        "Clue (o Cluedo)",
+        "Risk",
+        "Catan",
+        "Carcassonne",
+        "Ticket to Ride",
+        "Dominion",
+        "Pandemic",
+        "Agricola",
+        "Puerto Rico",
+        "Twilight Struggle",
+        "Power Grid",
+        "Terra Mystica",
+        "7 Wonders",
+        "Splendor",
+        "Codenames",
+        "Azul",
+        "Gloomhaven",
+        "Wingspan",
+        "Root",
+        "Brass: Birmingham"
+    )
+
+    val searchBarPlaceHolder by remember { mutableStateOf("¿De qué fue el juego?") }
     var query by remember { mutableStateOf("") }
+    var isActive by remember { mutableStateOf(false) }
+    var filteredGames by remember { mutableStateOf(games) }
+
     SearchBar(
         query = query,
-        onQueryChange = { newQuery -> query = newQuery },
-        onSearch = {},
-        active = false,
-        onActiveChange = {},
+        onQueryChange = { newQuery ->
+            query = newQuery
+            filteredGames = games.filter { it.contains(newQuery, ignoreCase = true) }
+        },
+        onSearch = {isActive = false},
+        active = isActive,
+        onActiveChange = {isActive = !isActive},
         placeholder = { Text(searchBarPlaceHolder) },
         leadingIcon = {
             Icon(
@@ -129,22 +166,31 @@ fun searchBar() {
                 contentDescription = "Icono para buscar"
             )
         },
-
         trailingIcon = {
             IconButton(onClick = {
                 query = ""
+                filteredGames = games
             }) {
                 Icon(
                     imageVector = Icons.Filled.Clear,
                     contentDescription = "Icono para borrar lo escrito"
                 )
             }
+
         },
         modifier = Modifier.fillMaxWidth(),
         shape = RectangleShape
     ) {
+        LazyColumn {
+            items(filteredGames) {  juego ->
+                TextButton(onClick = { query = juego }) {
+                    Text(juego)
+                }
+            }
+        }
 
     }
+
 }
 
 //@Preview(showBackground = true, showSystemUi = true)
