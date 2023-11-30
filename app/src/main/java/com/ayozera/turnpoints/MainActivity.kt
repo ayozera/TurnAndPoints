@@ -1,5 +1,6 @@
 package com.ayozera.turnpoints
 
+import android.graphics.Paint.Style
 import android.os.Build
 import android.os.Bundle
 import android.text.style.BackgroundColorSpan
@@ -9,6 +10,7 @@ import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -28,6 +30,7 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.AlertDialogDefaults.shape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -53,7 +56,9 @@ import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.ModifierLocalBeyondBoundsLayout
 import androidx.compose.ui.modifier.modifierLocalMapOf
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextDecoration
@@ -62,6 +67,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.ayozera.turnpoints.activities.PantallaNueva
+import com.ayozera.turnpoints.modelo.DataUp
 import com.ayozera.turnpoints.navegacion.NavigationGraph
 import com.ayozera.turnpoints.navegacion.Routs
 import com.ayozera.turnpoints.ui.theme.TurnpointsTheme
@@ -117,34 +123,8 @@ fun showMainScreen(navController: NavHostController) {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun searchBar() {
-    val games = listOf(
-        "Ajedrez",
-        "Damas",
-        "Backgammon",
-        "Monopoly",
-        "Scrabble",
-        "Clue (o Cluedo)",
-        "Risk",
-        "Catan",
-        "Carcassonne",
-        "Ticket to Ride",
-        "Dominion",
-        "Pandemic",
-        "Agricola",
-        "Puerto Rico",
-        "Twilight Struggle",
-        "Power Grid",
-        "Terra Mystica",
-        "7 Wonders",
-        "Splendor",
-        "Codenames",
-        "Azul",
-        "Gloomhaven",
-        "Wingspan",
-        "Root",
-        "Brass: Birmingham"
-    )
 
+    val games = DataUp.gameLoader(LocalContext.current)
     val searchBarPlaceHolder by remember { mutableStateOf("¿De qué fue el juego?") }
     var query by remember { mutableStateOf("") }
     var isActive by remember { mutableStateOf(false) }
@@ -156,9 +136,9 @@ fun searchBar() {
             query = newQuery
             filteredGames = games.filter { it.contains(newQuery, ignoreCase = true) }
         },
-        onSearch = {isActive = false},
+        onSearch = { isActive = false },
         active = isActive,
-        onActiveChange = {isActive = !isActive},
+        onActiveChange = { isActive = !isActive },
         placeholder = { Text(searchBarPlaceHolder) },
         leadingIcon = {
             Icon(
@@ -181,16 +161,47 @@ fun searchBar() {
         modifier = Modifier.fillMaxWidth(),
         shape = RectangleShape
     ) {
-        LazyColumn {
-            items(filteredGames) {  juego ->
-                TextButton(onClick = { query = juego }) {
-                    Text(juego)
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxWidth()
+
+        ) {
+            items(filteredGames) { juego ->
+                TextButton(
+                    onClick = { query = juego },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(color = Color.DarkGray)
+                        .border(
+                            width = .5.dp,
+                            color = Color.White,
+                        )
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(5.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Icon(
+                            imageVector = Icons.Filled.Star,
+                            contentDescription = "Icono de estrella",
+                            modifier = Modifier.size(24.dp),
+                            tint = Color.Black
+                        )
+
+                        Text(
+                            text = juego,
+                            fontSize = 26.sp,
+                            color = Color.Black,
+                            modifier = Modifier.padding(start = 10.dp)
+                        )
+                    }
                 }
             }
         }
 
     }
-
 }
 
 //@Preview(showBackground = true, showSystemUi = true)

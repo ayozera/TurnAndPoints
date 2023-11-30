@@ -153,7 +153,7 @@ fun PlayerSelection(players: List<String>, onPlayerSelection: (String) -> Unit) 
 }
 
 @Composable
-fun GameSelection(games: ArrayList<String>, onGameSelection: (String) -> Unit) {
+fun GameSelection(games: List<String>, onGameSelection: (String) -> Unit) {
     var expandedGame by remember { mutableStateOf(false) }
     var selectedGame by remember { mutableStateOf(games.first()) }
     Column {
