@@ -89,11 +89,11 @@ fun PantallaNueva(navController: NavHostController) {
             score = onScoreSelection
         }
         Spacer(modifier = Modifier.size(30.dp))
-        OponentSelection(players) { onOpponentSelected ->
+        OpponentSelection(players) { onOpponentSelected ->
             opponent = onOpponentSelected
         }
         Spacer(modifier = Modifier.size(30.dp))
-        datePickerScreen() { onDateSelected ->
+        DatePickerScreen() { onDateSelected ->
             day = onDateSelected.dayOfMonth
             month = onDateSelected.monthValue
             year = onDateSelected.year
@@ -238,7 +238,7 @@ fun ScoreSelection(onScoreSelection: (Int) -> Unit) {
 }
 
 @Composable
-fun OponentSelection(players: List<String>, onPlayerSelection: (String) -> Unit) {
+fun OpponentSelection(players: List<String>, onPlayerSelection: (String) -> Unit) {
     var expandedPlayer2 by remember { mutableStateOf(false) }
     var selectedPlayer2 by remember { mutableStateOf(players.first()) }
     Column {
@@ -272,7 +272,7 @@ fun OponentSelection(players: List<String>, onPlayerSelection: (String) -> Unit)
 @OptIn(ExperimentalMaterial3Api::class)
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun datePickerScreen(onDateSelection : (LocalDate) -> Unit) {
+fun DatePickerScreen(onDateSelection : (LocalDate) -> Unit) {
 
     val dateTime = LocalDateTime.now()
 
