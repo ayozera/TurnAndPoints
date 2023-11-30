@@ -5,5 +5,8 @@ data class Match(
     val game: String,
     val type: String,
     val opponent: String,
-    val score: Int
+    val score: Int,
+    val day: Int,
+    val month: Int,
+    val year: Int
 )

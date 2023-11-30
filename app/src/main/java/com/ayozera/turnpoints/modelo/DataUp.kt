@@ -36,6 +36,9 @@ class DataUp {
             var type = ""
             var opponent = ""
             var score = 0
+            var day = 0
+            var month = 0
+            var year = 0
             reader.forEachLine { line ->
                 if (line.isNotBlank()) {
                     counter++
@@ -44,10 +47,13 @@ class DataUp {
                         1 -> game = line
                         2 -> type = line
                         3 -> opponent = line
-                        4 -> {
-                            score = line.toInt()
+                        4 -> score = line.toInt()
+                        5 -> day = line.toInt()
+                        6 -> month = line.toInt()
+                        7 -> {
+                            year = line.toInt()
                             counter = -1
-                            questionsList.add(Match(player, game, type, opponent,score))
+                            questionsList.add(Match(player, game, type, opponent, score, day, month, year))
                         }
                     }
                 }
@@ -60,7 +66,7 @@ class DataUp {
     companion object {
         fun writer(match: Match, context: Context) {
             val content = "\n${match.player}\n${match.game}\n${match.type}\n" +
-                    "${match.opponent}\n${match.score}\n"
+                    "${match.opponent}\n${match.score}\n${match.day}\n${match.month}\n${match.year}\n"
             val writer: FileOutputStream =
                 context.openFileOutput("matches.txt", Context.MODE_APPEND)
             writer.write("$content".toByteArray())

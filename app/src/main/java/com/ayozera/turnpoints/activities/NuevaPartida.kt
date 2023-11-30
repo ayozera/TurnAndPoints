@@ -45,6 +45,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavHostController
 import com.ayozera.turnpoints.modelo.DataUp
 import com.ayozera.turnpoints.modelo.Match
+import java.time.Instant
+import java.time.LocalDate
+import java.time.ZoneId
 
 
 //@Preview(showBackground = true, showSystemUi = true)
@@ -59,6 +62,9 @@ fun PantallaNueva(navController: NavHostController) {
     var type = ""
     var score = 0
     var opponent = ""
+    var day = 0
+    var month = 0
+    var year = 0
     val context = LocalContext.current
 
     Column(
@@ -87,17 +93,24 @@ fun PantallaNueva(navController: NavHostController) {
             opponent = onOpponentSelected
         }
         Spacer(modifier = Modifier.size(30.dp))
-        datePickerScreen()
+        datePickerScreen() { onDateSelected ->
+            day = onDateSelected.dayOfMonth
+            month = onDateSelected.monthValue
+            year = onDateSelected.year
+        }
         Spacer(modifier = Modifier.size(30.dp))
         ButtonSave() {
-            if (player.isNotBlank() && game.isNotBlank() && type.isNotBlank() && opponent.isNotBlank()) {
+            if (player.isNotBlank() && game.isNotBlank() && type.isNotBlank() && opponent.isNotBlank() && year != 0) {
                 DataUp.writer(
                     Match(
                         player,
                         game,
                         type,
                         opponent,
-                        score
+                        score,
+                        day,
+                        month,
+                        year
                     ), context
                 )
             }
@@ -256,11 +269,10 @@ fun OponentSelection(players: List<String>, onPlayerSelection: (String) -> Unit)
     }
 }
 
-@Preview(showSystemUi = true, showBackground = true)
 @OptIn(ExperimentalMaterial3Api::class)
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun datePickerScreen() {
+fun datePickerScreen(onDateSelection : (LocalDate) -> Unit) {
 
     val dateTime = LocalDateTime.now()
 
@@ -272,8 +284,12 @@ fun datePickerScreen() {
             initialDisplayedMonthMillis = null
         )
     }
-
     DatePicker(state = datePickerState)
+
+    val date = datePickerState.selectedDateMillis
+    date?.let {
+        onDateSelection(Instant.ofEpochMilli(it).atZone(ZoneId.of("UTC")).toLocalDate())
+    }
 }
 
 @Composable
@@ -282,8 +298,3 @@ fun ButtonSave(onSave: () -> Unit) {
         Text(text = "Guardar Partida", color = Color.White)
     }
 }
-
-
-
-
-
