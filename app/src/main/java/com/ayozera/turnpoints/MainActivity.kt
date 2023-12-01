@@ -73,6 +73,8 @@ import com.ayozera.turnpoints.navegacion.Routs
 import com.ayozera.turnpoints.ui.theme.TurnpointsTheme
 import com.ayozera.turnpoints.ui.theme.Rojo
 import com.ayozera.turnpoints.ui.theme.Fondo
+import com.ayozera.turnpoints.ui.theme.FondoSearchBar
+import com.ayozera.turnpoints.ui.theme.letrasSearchBar
 
 
 class MainActivity : ComponentActivity() {
@@ -171,7 +173,7 @@ fun searchBar() {
                     onClick = { query = juego },
                     modifier = Modifier
                         .fillMaxWidth()
-                        .background(color = Color.DarkGray)
+                        .background(color = FondoSearchBar)
                         .border(
                             width = .5.dp,
                             color = Color.White,
@@ -187,13 +189,13 @@ fun searchBar() {
                             imageVector = Icons.Filled.Star,
                             contentDescription = "Icono de estrella",
                             modifier = Modifier.size(24.dp),
-                            tint = Color.Black
+                            tint = letrasSearchBar
                         )
 
                         Text(
                             text = juego,
                             fontSize = 26.sp,
-                            color = Color.Black,
+                            color = letrasSearchBar,
                             modifier = Modifier.padding(start = 10.dp)
                         )
                     }
