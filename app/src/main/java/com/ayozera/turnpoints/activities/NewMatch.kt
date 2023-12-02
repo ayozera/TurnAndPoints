@@ -44,6 +44,7 @@ import androidx.navigation.NavHostController
 import com.ayozera.turnpoints.models.DataUp
 import com.ayozera.turnpoints.models.DataUp.Companion.gameLoader
 import com.ayozera.turnpoints.models.DataUp.Companion.playerLoader
+import com.ayozera.turnpoints.models.GameType
 import com.ayozera.turnpoints.models.Match
 import com.ayozera.turnpoints.models.Player
 import java.time.Instant
@@ -58,10 +59,10 @@ fun PantallaNueva(navController: NavHostController) {
     val context = LocalContext.current
     val players = playerLoader(context)
     val games = gameLoader(context)
-    val gameTypes = listOf("Tablero", "Economía", "Estrategia", "Competitivo", "Colaborativo")
+    val gameTypes = listOf(GameType.BOARD, GameType.CARDS, GameType.ROLE_PLAYING, GameType.STRATEGY, GameType.TRIVIA)
     var player = ""
     var game = ""
-    var type = ""
+    var type = GameType.BOARD
     var score = 0
     var opponent = ""
     var day = 0
@@ -102,7 +103,7 @@ fun PantallaNueva(navController: NavHostController) {
         }
         Spacer(modifier = Modifier.size(30.dp))
         ButtonSave() {
-            if (player.isNotBlank() && game.isNotBlank() && type.isNotBlank() && opponent.isNotBlank() && year != 0) {
+            if (player.isNotBlank() && game.isNotBlank() && opponent.isNotBlank() && year != 0) {
                 players.forEach { actual ->
                     if (actual.name == player)
                         DataUp.writer(
@@ -186,7 +187,7 @@ fun GameSelection(games: List<String>, onGameSelection: (String) -> Unit) {
 }
 
 @Composable
-fun TypeSelection(gameTypes: List<String>, onTypeSelection: (String) -> Unit) {
+fun TypeSelection(gameTypes: List<GameType>, onTypeSelection: (GameType) -> Unit) {
     var selectedGameType by remember { mutableStateOf("") }
     Column {
         Text(
@@ -197,18 +198,18 @@ fun TypeSelection(gameTypes: List<String>, onTypeSelection: (String) -> Unit) {
             Row(
                 Modifier
                     .fillMaxWidth()
-                    .selectable(selected = (gameType == selectedGameType),
-                        onClick = { selectedGameType = gameType })
+                    .selectable(selected = (gameType.name == selectedGameType),
+                        onClick = { selectedGameType = gameType.name })
                     .padding(horizontal = 50.dp),
                 verticalAlignment = CenterVertically
             ) {
-                RadioButton(selected = (gameType == selectedGameType),
+                RadioButton(selected = (gameType.name == selectedGameType),
                     onClick = {
-                        selectedGameType = gameType
+                        selectedGameType = gameType.name
                         onTypeSelection(gameType)
                     })
                 Text(
-                    text = gameType,
+                    text = gameType.name,
                     style = MaterialTheme.typography.bodyMedium.merge(),
                     modifier = Modifier.padding(start = 16.dp)
                 )
