@@ -53,6 +53,8 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -99,11 +101,23 @@ fun showMainScreen(navController: NavHostController) {
         verticalArrangement = Arrangement.SpaceBetween
     ) {
         Column {
-            Text(text = "Bienvenido a la app para saber...")
+            Text(
+                text = "Bienvenido a Turn & points",
+                fontSize = 32.sp,
+                fontFamily = FontFamily.Cursive,
+                color = LetraOscura,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier
+                    .padding(16.dp)
+                    .align(Alignment.CenterHorizontally)
+            )
             searchBar() {
                 filtroJuegos = it
             }
-            playerCard(showCheckbox.value, filtroJuegos){onClick -> navController.navigate(Routs.GameInformation.rout + "/$onClick")}
+            playerCard(
+                showCheckbox.value,
+                filtroJuegos
+            ) { onClick -> navController.navigate(Routs.GameInformation.rout + "/$onClick") }
             Button(
                 onClick = { navController.navigate(Routs.NuevaPartida.rout) },
                 colors = ButtonDefaults.buttonColors(
@@ -113,20 +127,6 @@ fun showMainScreen(navController: NavHostController) {
             ) {
                 Text(
                     text = "Mostrar pantalla Nueva", style = TextStyle(
-                        fontSize = 20.sp, color = Color.White
-                    )
-                )
-            }
-
-            Button(
-                onClick = { navController.navigate(Routs.GameInformation.rout)},
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Color.Blue
-                ),
-                modifier = Modifier.padding(16.dp)
-            ) {
-                Text(
-                    text = "Mostrar información", style = TextStyle(
                         fontSize = 20.sp, color = Color.White
                     )
                 )
@@ -216,23 +216,22 @@ fun searchBar(onSearchSelected: (String) -> Unit) {
                 }
             }
         }
-
     }
 }
 
 //@Preview(showBackground = true, showSystemUi = true)
 @Composable
-fun playerCard(showCheckbox: Boolean, filtroJuegos: String, onClick: (String) -> Unit ){
+fun playerCard(showCheckbox: Boolean, filtroJuegos: String, onClick: (String) -> Unit) {
 
     val matches = DataUp.matchLoader(LocalContext.current)
     val players = DataUp.playerLoader(LocalContext.current)
 
-    matches.forEach {match ->
+    matches.forEach { match ->
         if (match.game.contains(filtroJuegos)) {
             var avatar = ""
             var colorFondo = Color.Red
             players.forEach {
-                if (match.player == it.name){
+                if (match.player == it.name) {
                     avatar = it.avatar
                     colorFondo = it.color
                 }
@@ -245,7 +244,7 @@ fun playerCard(showCheckbox: Boolean, filtroJuegos: String, onClick: (String) ->
                     modifier = Modifier
                         .background(color = Fondo)
                         .padding(16.dp)
-                        .clickable(onClick = { onClick(match.game)  })
+                        .clickable(onClick = { onClick(match.game) })
 
                 ) {
 
@@ -258,8 +257,10 @@ fun playerCard(showCheckbox: Boolean, filtroJuegos: String, onClick: (String) ->
                         verticalAlignment = Alignment.CenterVertically
                     ) {
 
-                        val imageResourceId = LocalContext.current.resources.getIdentifier(avatar,
-                            "drawable", LocalContext.current.packageName)
+                        val imageResourceId = LocalContext.current.resources.getIdentifier(
+                            avatar,
+                            "drawable", LocalContext.current.packageName
+                        )
 
                         Image(
                             painter = painterResource(id = imageResourceId),
@@ -283,7 +284,7 @@ fun playerCard(showCheckbox: Boolean, filtroJuegos: String, onClick: (String) ->
                             )
                             Text(
                                 text = "VS ${match.opponent}, ${match.day}-${match.month}-${match.year}",
-                                style = TextStyle( fontSize = 14.sp, color = Color.White )
+                                style = TextStyle(fontSize = 14.sp, color = Color.White)
                             )
                             Text(
                                 text = "${match.score} puntos", style = TextStyle(
