@@ -26,6 +26,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.ayozera.turnpoints.R
+import com.ayozera.turnpoints.models.Match
 import com.ayozera.turnpoints.ui.theme.Rojo
 import java.io.BufferedReader
 import java.io.IOException
@@ -35,23 +36,25 @@ import java.util.Random
 
 
 @Composable
-fun showInformation(navController: NavHostController) {
-    val fileContent = readFile("gamesInformation/monopoly.txt", LocalContext.current)
+fun showInformation(navController: NavHostController, context: Context, match: Match) {
+
+    val fileContent = readFile("gamesInformation/${match.game}.txt", context)
+    val resourceId = context.resources.getIdentifier(match.game, "drawable", context.packageName)
 
     Column {
         Box(modifier = Modifier
             .align(CenterHorizontally)
             .padding(top = 16.dp)) {
             Text(
-                text = "Nombre del juego",
+                text = match.game,
                 fontSize = 30.sp,
                 fontWeight = FontWeight.Bold
             )
         }
         Box() {
             Image(
-                painter = painterResource(id = R.drawable.monopoly),
-                contentDescription = "Tablero del juego de monopoly",
+                painter = painterResource(id = resourceId),
+                contentDescription = "Tablero del juego de ${match.game}",
                 contentScale = ContentScale.FillBounds,
                 modifier = Modifier
                     .fillMaxWidth()
