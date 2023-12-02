@@ -244,6 +244,7 @@ fun playerCard(showCheckbox: Boolean, filtroJuegos: String) {
                         .padding(16.dp)
 
                 ) {
+
                     Row(
                         modifier = Modifier
                             .background(color = colorFondo)
@@ -252,6 +253,7 @@ fun playerCard(showCheckbox: Boolean, filtroJuegos: String) {
                         horizontalArrangement = Arrangement.SpaceEvenly,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
+
                         val imageResourceId = LocalContext.current.resources.getIdentifier(avatar,
                             "drawable", LocalContext.current.packageName)
 
