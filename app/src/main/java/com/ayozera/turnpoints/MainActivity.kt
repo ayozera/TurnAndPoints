@@ -252,7 +252,6 @@ fun playerCard(showCheckbox: Boolean, filtroJuegos: String) {
                         horizontalArrangement = Arrangement.SpaceEvenly,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-
                         val imageResourceId = LocalContext.current.resources.getIdentifier(avatar,
                             "drawable", LocalContext.current.packageName)
 
