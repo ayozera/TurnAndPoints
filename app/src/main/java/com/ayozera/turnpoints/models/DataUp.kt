@@ -22,7 +22,7 @@ class DataUp {
             reader.close()
             writer.close()
         }
-        fun gameLoader(context : Context): ArrayList<String> {
+        fun gameLoader(context : Context): List<String> {
             val gamesList = ArrayList<String>()
             val file = File(context.filesDir, "games.txt")
             try {
