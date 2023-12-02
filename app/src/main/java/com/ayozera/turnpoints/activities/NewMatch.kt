@@ -14,6 +14,7 @@ import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerState
@@ -33,12 +34,14 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Slider
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
 import java.time.LocalDateTime
 import androidx.navigation.NavHostController
 import com.ayozera.turnpoints.models.DataUp
@@ -47,6 +50,9 @@ import com.ayozera.turnpoints.models.DataUp.Companion.playerLoader
 import com.ayozera.turnpoints.models.GameType
 import com.ayozera.turnpoints.models.Match
 import com.ayozera.turnpoints.models.Player
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
@@ -59,7 +65,13 @@ fun PantallaNueva(navController: NavHostController) {
     val context = LocalContext.current
     val players = playerLoader(context)
     val games = gameLoader(context)
-    val gameTypes = listOf(GameType.BOARD, GameType.CARDS, GameType.ROLE_PLAYING, GameType.STRATEGY, GameType.TRIVIA)
+    val gameTypes = listOf(
+        GameType.BOARD,
+        GameType.CARDS,
+        GameType.ROLE_PLAYING,
+        GameType.STRATEGY,
+        GameType.TRIVIA
+    )
     var player = ""
     var game = ""
     var type = GameType.BOARD
@@ -68,7 +80,9 @@ fun PantallaNueva(navController: NavHostController) {
     var day = 0
     var month = 0
     var year = 0
-
+    var openDialog by remember { mutableStateOf(false) }
+    var openDialogError by remember { mutableStateOf(false) }
+    val delay = rememberCoroutineScope()
 
     Column(
         verticalArrangement = Arrangement.SpaceEvenly,
@@ -108,9 +122,9 @@ fun PantallaNueva(navController: NavHostController) {
                     if (actual.name == player)
                         DataUp.writer(
                             Match(
-                                actual,
+                                actual.name,
                                 game,
-                                type,
+                                type.name,
                                 opponent,
                                 score,
                                 day,
@@ -119,9 +133,29 @@ fun PantallaNueva(navController: NavHostController) {
                             ), context
                         )
                 }
+
+                delay.launch(Dispatchers.Main) {
+                    openDialog = true
+                    delay(3000)
+                    navController.popBackStack()
+                }
+            } else {
+                openDialogError = true
             }
         }
         Spacer(modifier = Modifier.size(60.dp))
+
+        if (openDialog) {
+            AlertDialog() {
+                openDialog = false
+            }
+        }
+
+        if (openDialogError) {
+            AlertDialogError() {
+                openDialogError = false
+            }
+        }
     }
 }
 
@@ -301,5 +335,59 @@ fun DatePickerScreen(onDateSelection: (LocalDate) -> Unit) {
 fun ButtonSave(onSave: () -> Unit) {
     Button(onClick = { onSave() }) {
         Text(text = "Guardar Partida", color = Color.White)
+    }
+}
+
+@Composable
+fun AlertDialog(onDismissClick: () -> Unit) {
+    MaterialTheme {
+        Column {
+            AlertDialog(
+                onDismissRequest = {
+                    onDismissClick()
+                },
+                title = {
+                    Text(text = "Partida guardada")
+                },
+                text = {
+                    Text("Partida añadida correctamente")
+                },
+                confirmButton = {
+                    Button(
+                        onClick = {
+                            onDismissClick()
+                        }) {
+                        Text("Entendido")
+                    }
+                },
+            )
+        }
+    }
+}
+
+@Composable
+fun AlertDialogError(onDismissClick: () -> Unit) {
+    MaterialTheme {
+        Column {
+            AlertDialog(
+                onDismissRequest = {
+                    onDismissClick()
+                },
+                title = {
+                    Text(text = "Error")
+                },
+                text = {
+                    Text("Se deben cumplimentar todos los campos")
+                },
+                confirmButton = {
+                    Button(
+                        onClick = {
+                            onDismissClick()
+                        }) {
+                        Text("Entendido")
+                    }
+                },
+            )
+        }
     }
 }
