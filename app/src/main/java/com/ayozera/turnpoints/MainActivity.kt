@@ -127,7 +127,7 @@ fun showMainScreen(navController: NavHostController) {
 fun searchBar() {
 
     val games = DataUp.gameLoader(LocalContext.current)
-    val searchBarPlaceHolder by remember { mutableStateOf("¿De qué fue el juego?") }
+
     var query by remember { mutableStateOf("") }
     var isActive by remember { mutableStateOf(false) }
     var filteredGames by remember { mutableStateOf(games) }
@@ -141,7 +141,7 @@ fun searchBar() {
         onSearch = { isActive = false },
         active = isActive,
         onActiveChange = { isActive = !isActive },
-        placeholder = { Text(searchBarPlaceHolder) },
+        placeholder = { Text("¿De qué fue el juego?") },
         leadingIcon = {
             Icon(
                 imageVector = Icons.Filled.Search,
