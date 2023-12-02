@@ -2,7 +2,6 @@ package com.ayozera.turnpoints.activities
 
 import android.os.Build
 import androidx.annotation.RequiresApi
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -41,11 +40,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import java.time.LocalDateTime
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavHostController
-import com.ayozera.turnpoints.modelo.DataUp
-import com.ayozera.turnpoints.modelo.DataUp.Companion.gameLoader
-import com.ayozera.turnpoints.modelo.Match
+import com.ayozera.turnpoints.models.DataUp
+import com.ayozera.turnpoints.models.DataUp.Companion.gameLoader
+import com.ayozera.turnpoints.models.Match
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId

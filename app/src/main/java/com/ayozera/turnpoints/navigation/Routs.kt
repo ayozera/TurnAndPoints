@@ -1,4 +1,4 @@
-package com.ayozera.turnpoints.navegacion
+package com.ayozera.turnpoints.navigation
 
 sealed class Routs(val rout : String) {
     object Jugadores : Routs("jugadores")

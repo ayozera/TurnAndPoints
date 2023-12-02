@@ -1,4 +1,4 @@
-package com.ayozera.turnpoints.modelo
+package com.ayozera.turnpoints.models
 
 import android.content.Context
 import java.io.BufferedReader
