@@ -43,6 +43,7 @@ import java.time.LocalDateTime
 import androidx.navigation.NavHostController
 import com.ayozera.turnpoints.models.DataUp
 import com.ayozera.turnpoints.models.DataUp.Companion.gameLoader
+import com.ayozera.turnpoints.models.GameType
 import com.ayozera.turnpoints.models.Match
 import java.time.Instant
 import java.time.LocalDate
@@ -56,7 +57,7 @@ fun PantallaNueva(navController: NavHostController) {
     val context = LocalContext.current
     val players = listOf("Player 1", "Player 2", "Player 3")
     val games = gameLoader(context)
-    val gameTypes = listOf("Tablero", "Economía", "Estrategia", "Competitivo", "Colaborativo")
+    val gameTypes = listOf(GameType.BOARD,GameType.CARDS,GameType.ROLE_PLAYING,GameType.TRIVIA,GameType.STRATEGY)
     var player = ""
     var game = ""
     var type = ""
@@ -181,7 +182,7 @@ fun GameSelection(games: List<String>, onGameSelection: (String) -> Unit) {
 }
 
 @Composable
-fun TypeSelection(gameTypes: List<String>, onTypeSelection: (String) -> Unit) {
+fun TypeSelection(gameTypes: List<GameType>, onTypeSelection: (String) -> Unit) {
     var selectedGameType by remember { mutableStateOf("") }
     Column {
         Text(
@@ -192,18 +193,18 @@ fun TypeSelection(gameTypes: List<String>, onTypeSelection: (String) -> Unit) {
             Row(
                 Modifier
                     .fillMaxWidth()
-                    .selectable(selected = (gameType == selectedGameType),
-                        onClick = { selectedGameType = gameType })
+                    .selectable(selected = (gameType.toString() == selectedGameType),
+                        onClick = { selectedGameType = gameType.toString() })
                     .padding(horizontal = 50.dp),
                 verticalAlignment = CenterVertically
             ) {
-                RadioButton(selected = (gameType == selectedGameType),
+                RadioButton(selected = (gameType.toString() == selectedGameType),
                     onClick = {
-                        selectedGameType = gameType
-                        onTypeSelection(gameType)
+                        selectedGameType = gameType.toString()
+                        onTypeSelection(gameType.toString())
                     })
                 Text(
-                    text = gameType,
+                    text = gameType.toString(),
                     style = MaterialTheme.typography.bodyMedium.merge(),
                     modifier = Modifier.padding(start = 16.dp)
                 )
