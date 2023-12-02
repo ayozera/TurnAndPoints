@@ -43,6 +43,50 @@ class DataUp {
             return gamesList
         }
 
+        fun playerFirstLoader(context: Context) {
+            val assetManager = context.assets
+            val inputStream = assetManager.open("players.txt")
+            val reader = BufferedReader(InputStreamReader(inputStream))
+            val writer : FileOutputStream =
+                context.openFileOutput("players.txt", Context.MODE_APPEND)
+            reader.forEachLine { line ->
+                writer.write("$line\n".toByteArray())
+            }
+            reader.close()
+            writer.close()
+        }
+        fun playerLoader(context : Context): List<Player> {
+            val playerList = ArrayList<Player>()
+            val file = File(context.filesDir, "players.txt")
+            try {
+                if (!file.exists()) {
+                    playerFirstLoader(context)
+                }
+                val fileInput = FileInputStream(file)
+                val reader = BufferedReader(InputStreamReader(fileInput))
+                var counter = -1
+                var player = ""
+                var avatar = ""
+
+                reader.forEachLine { line ->
+                    if (line.isNotBlank()) {
+                        counter++
+                        when (counter) {
+                            0 -> player = line
+                            1 -> {
+                                avatar = line
+                                counter = -1
+                                playerList.add(Player(player, avatar))
+                            }
+                        }
+                    }
+                }
+            } catch (e: IOException) {
+                e.printStackTrace()
+            }
+            return playerList
+        }
+
         fun matchFirstloader(context: Context) {
             val assetManager = context.assets
             val inputStream = assetManager.open("matches.txt")
@@ -66,6 +110,7 @@ class DataUp {
                 val reader = BufferedReader(InputStreamReader(fileInput))
                 var counter = -1
                 var player = ""
+                var avatar = ""
                 var game = ""
                 var type = ""
                 var opponent = ""
@@ -78,16 +123,17 @@ class DataUp {
                         counter++
                         when (counter) {
                             0 -> player = line
-                            1 -> game = line
-                            2 -> type = line
-                            3 -> opponent = line
-                            4 -> score = line.toInt()
-                            5 -> day = line.toInt()
-                            6 -> month = line.toInt()
-                            7 -> {
+                            1 -> avatar = line
+                            2 -> game = line
+                            3 -> type = line
+                            4 -> opponent = line
+                            5 -> score = line.toInt()
+                            6 -> day = line.toInt()
+                            7 -> month = line.toInt()
+                            8 -> {
                                 year = line.toInt()
                                 counter = -1
-                                matchesList.add(Match(player, game, type, opponent, score, day, month, year))
+                                matchesList.add(Match(Player(player, avatar), game, type, opponent, score, day, month, year))
                             }
                         }
                     }

@@ -43,7 +43,9 @@ import java.time.LocalDateTime
 import androidx.navigation.NavHostController
 import com.ayozera.turnpoints.models.DataUp
 import com.ayozera.turnpoints.models.DataUp.Companion.gameLoader
+import com.ayozera.turnpoints.models.DataUp.Companion.playerLoader
 import com.ayozera.turnpoints.models.Match
+import com.ayozera.turnpoints.models.Player
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
@@ -54,7 +56,7 @@ import java.time.ZoneId
 @Composable
 fun PantallaNueva(navController: NavHostController) {
     val context = LocalContext.current
-    val players = listOf("Player 1", "Player 2", "Player 3")
+    val players = playerLoader(context)
     val games = gameLoader(context)
     val gameTypes = listOf("Tablero", "Economía", "Estrategia", "Competitivo", "Colaborativo")
     var player = ""
@@ -101,18 +103,21 @@ fun PantallaNueva(navController: NavHostController) {
         Spacer(modifier = Modifier.size(30.dp))
         ButtonSave() {
             if (player.isNotBlank() && game.isNotBlank() && type.isNotBlank() && opponent.isNotBlank() && year != 0) {
-                DataUp.writer(
-                    Match(
-                        player,
-                        game,
-                        type,
-                        opponent,
-                        score,
-                        day,
-                        month,
-                        year
-                    ), context
-                )
+                players.forEach { actual ->
+                    if (actual.name == player)
+                        DataUp.writer(
+                            Match(
+                                actual,
+                                game,
+                                type,
+                                opponent,
+                                score,
+                                day,
+                                month,
+                                year
+                            ), context
+                        )
+                }
             }
         }
         Spacer(modifier = Modifier.size(60.dp))
@@ -120,7 +125,7 @@ fun PantallaNueva(navController: NavHostController) {
 }
 
 @Composable
-fun PlayerSelection(players: List<String>, onPlayerSelection: (String) -> Unit) {
+fun PlayerSelection(players: List<Player>, onPlayerSelection: (String) -> Unit) {
     var expandedPlayer by remember { mutableStateOf(false) }
     var selectedPlayer by remember { mutableStateOf("") }
     Column() {
@@ -139,10 +144,10 @@ fun PlayerSelection(players: List<String>, onPlayerSelection: (String) -> Unit) 
                 DropdownMenu(expanded = expandedPlayer,
                     onDismissRequest = { expandedPlayer = false }) {
                     players.forEach { player ->
-                        DropdownMenuItem(text = { Text(text = player) }, onClick = {
-                            selectedPlayer = player
+                        DropdownMenuItem(text = { Text(text = player.name) }, onClick = {
+                            selectedPlayer = player.name
                             expandedPlayer = false
-                            onPlayerSelection(player)
+                            onPlayerSelection(player.name)
                         })
                     }
                 }
@@ -237,7 +242,7 @@ fun ScoreSelection(onScoreSelection: (Int) -> Unit) {
 }
 
 @Composable
-fun OpponentSelection(players: List<String>, onPlayerSelection: (String) -> Unit) {
+fun OpponentSelection(players: List<Player>, onPlayerSelection: (String) -> Unit) {
     var expandedPlayer2 by remember { mutableStateOf(false) }
     var selectedPlayer2 by remember { mutableStateOf("") }
     Column {
@@ -255,11 +260,11 @@ fun OpponentSelection(players: List<String>, onPlayerSelection: (String) -> Unit
                 DropdownMenu(expanded = expandedPlayer2,
                     onDismissRequest = { expandedPlayer2 = false }) {
                     players.forEach { player ->
-                        DropdownMenuItem(text = { Text(text = player) },
+                        DropdownMenuItem(text = { Text(text = player.name) },
                             onClick = {
-                                selectedPlayer2 = player
+                                selectedPlayer2 = player.name
                                 expandedPlayer2 = false
-                                onPlayerSelection(player)
+                                onPlayerSelection(player.name)
                             }
                         )
                     }
@@ -271,7 +276,7 @@ fun OpponentSelection(players: List<String>, onPlayerSelection: (String) -> Unit
 @OptIn(ExperimentalMaterial3Api::class)
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun DatePickerScreen(onDateSelection : (LocalDate) -> Unit) {
+fun DatePickerScreen(onDateSelection: (LocalDate) -> Unit) {
 
     val dateTime = LocalDateTime.now()
 
