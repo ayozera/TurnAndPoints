@@ -1,5 +1,5 @@
 
-Player(name=Pablo, avatar=avatar1)
+Pablo
 Cluedo
 ROLE_PLAYING
 Amelia
@@ -8,7 +8,7 @@ Amelia
 12
 2023
 
-Player(name=Yanira, avatar=avatar3)
+Yanira
 Monopoly
 BOARD
 El profesor
@@ -17,7 +17,7 @@ El profesor
 12
 2023
 
-Player(name=María, avatar=avatar2)
+María
 Cluedo
 ROLE_PLAYING
 Shurnoap

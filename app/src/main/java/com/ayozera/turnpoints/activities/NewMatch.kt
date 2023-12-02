@@ -57,8 +57,6 @@ import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
 
-
-//@Preview(showBackground = true, showSystemUi = true)
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun PantallaNueva(navController: NavHostController) {
@@ -164,7 +162,6 @@ fun PlayerSelection(players: List<Player>, onPlayerSelection: (String) -> Unit) 
     var expandedPlayer by remember { mutableStateOf(false) }
     var selectedPlayer by remember { mutableStateOf("") }
     Column() {
-
         Text(text = "Introduce el nombre del jugador")
         TextField(value = selectedPlayer,
             onValueChange = {},
@@ -186,7 +183,8 @@ fun PlayerSelection(players: List<Player>, onPlayerSelection: (String) -> Unit) 
                         })
                     }
                 }
-            })
+            }
+        )
     }
 }
 
@@ -216,7 +214,8 @@ fun GameSelection(games: List<String>, onGameSelection: (String) -> Unit) {
                         })
                     }
                 }
-            })
+            }
+        )
     }
 }
 
@@ -304,7 +303,8 @@ fun OpponentSelection(players: List<Player>, onPlayerSelection: (String) -> Unit
                         )
                     }
                 }
-            })
+            }
+        )
     }
 }
 

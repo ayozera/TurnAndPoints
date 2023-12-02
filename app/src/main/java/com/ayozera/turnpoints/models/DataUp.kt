@@ -67,16 +67,18 @@ class DataUp {
                 var counter = -1
                 var player = ""
                 var avatar = ""
+                var color = ""
 
                 reader.forEachLine { line ->
                     if (line.isNotBlank()) {
                         counter++
                         when (counter) {
                             0 -> player = line
-                            1 -> {
+                            1 -> color = line
+                            2 -> {
                                 avatar = line
                                 counter = -1
-                                playerList.add(Player(player, avatar))
+                                playerList.add(Player(player, Util.randomColor(), avatar))
                             }
                         }
                     }

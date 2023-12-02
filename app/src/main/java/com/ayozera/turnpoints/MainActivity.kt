@@ -1,39 +1,29 @@
 package com.ayozera.turnpoints
 
-import android.graphics.Paint.Style
 import android.os.Build
 import android.os.Bundle
-import android.text.style.BackgroundColorSpan
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.AddCircle
-import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Star
-import androidx.compose.material3.AlertDialogDefaults.shape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -47,7 +37,6 @@ import androidx.compose.material3.SearchBar
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
@@ -57,21 +46,16 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.layout.ModifierLocalBeyondBoundsLayout
-import androidx.compose.ui.modifier.modifierLocalMapOf
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextDecoration
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import com.ayozera.turnpoints.activities.PantallaNueva
 import com.ayozera.turnpoints.models.DataUp
 import com.ayozera.turnpoints.navigation.NavigationGraph
 import com.ayozera.turnpoints.navigation.Routs
@@ -80,6 +64,7 @@ import com.ayozera.turnpoints.ui.theme.Rojo
 import com.ayozera.turnpoints.ui.theme.Fondo
 import com.ayozera.turnpoints.ui.theme.FondoSearchBar
 import com.ayozera.turnpoints.ui.theme.LetraOscura
+import com.ayozera.turnpoints.ui.theme.jugador1
 import com.ayozera.turnpoints.ui.theme.letrasSearchBar
 
 
@@ -91,8 +76,7 @@ class MainActivity : ComponentActivity() {
             TurnpointsTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
+                    modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background
                 ) {
                     NavigationGraph()
                 }
@@ -105,6 +89,8 @@ class MainActivity : ComponentActivity() {
 fun showMainScreen(navController: NavHostController) {
 
     val showCheckbox = remember { mutableStateOf(false) }
+    var filtroJuegos by remember { mutableStateOf("") }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -113,8 +99,10 @@ fun showMainScreen(navController: NavHostController) {
     ) {
         Column {
             Text(text = "Bienvenido a la app para saber...")
-            searchBar()
-            playerCard(showCheckbox.value)
+            searchBar() {
+                filtroJuegos = it
+            }
+            playerCard(showCheckbox.value, filtroJuegos)
             Button(
                 onClick = { navController.navigate(Routs.NuevaPartida.rout) },
                 colors = ButtonDefaults.buttonColors(
@@ -123,10 +111,8 @@ fun showMainScreen(navController: NavHostController) {
                 modifier = Modifier.padding(16.dp)
             ) {
                 Text(
-                    text = "Mostrar pantalla Nueva",
-                    style = TextStyle(
-                        fontSize = 20.sp,
-                        color = Color.White
+                    text = "Mostrar pantalla Nueva", style = TextStyle(
+                        fontSize = 20.sp, color = Color.White
                     )
                 )
             }
@@ -139,10 +125,8 @@ fun showMainScreen(navController: NavHostController) {
                 modifier = Modifier.padding(16.dp)
             ) {
                 Text(
-                    text = "Mostrar información",
-                    style = TextStyle(
-                        fontSize = 20.sp,
-                        color = Color.White
+                    text = "Mostrar información", style = TextStyle(
+                        fontSize = 20.sp, color = Color.White
                     )
                 )
             }
@@ -150,9 +134,10 @@ fun showMainScreen(navController: NavHostController) {
         buttonsAddAndDelete(showCheckbox)
     }
 }
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun searchBar() {
+fun searchBar(onSearchSelected: (String) -> Unit) {
 
     val games = DataUp.gameLoader(LocalContext.current)
 
@@ -172,8 +157,7 @@ fun searchBar() {
         placeholder = { Text("¿De qué fue el juego?") },
         leadingIcon = {
             Icon(
-                imageVector = Icons.Filled.Search,
-                contentDescription = "Icono para buscar"
+                imageVector = Icons.Filled.Search, contentDescription = "Icono para buscar"
             )
         },
         trailingIcon = {
@@ -192,14 +176,15 @@ fun searchBar() {
         shape = RectangleShape
     ) {
         LazyColumn(
-            modifier = Modifier
-                .fillMaxWidth()
+            modifier = Modifier.fillMaxWidth()
 
         ) {
             items(filteredGames) { juego ->
                 TextButton(
-                    onClick = { query = juego },
-                    modifier = Modifier
+                    onClick = {
+                        query = juego
+                        onSearchSelected(juego)
+                    }, modifier = Modifier
                         .fillMaxWidth()
                         .background(color = FondoSearchBar)
                         .border(
@@ -236,69 +221,80 @@ fun searchBar() {
 
 //@Preview(showBackground = true, showSystemUi = true)
 @Composable
-fun playerCard(showCheckbox: Boolean) {
-    Column(
-        modifier = Modifier
-            .background(color = Fondo),
-        verticalArrangement = Arrangement.Center
-    ) {
-        Card(
-            modifier = Modifier
-                .background(color = Fondo)
-                .padding(16.dp)
-
-        ) {
-            Row(
-                modifier = Modifier
-                    .background(color = Rojo)
-                    .fillMaxWidth()
-                    .padding(10.dp),
-                horizontalArrangement = Arrangement.SpaceEvenly,
-                verticalAlignment = Alignment.CenterVertically
+fun playerCard(showCheckbox: Boolean, filtroJuegos: String) {
+    val matches = DataUp.matchLoader(LocalContext.current)
+    val players = DataUp.playerLoader(LocalContext.current)
+    matches.forEach {match ->
+        if (match.game.contains(filtroJuegos)) {
+            var avatar = ""
+            var colorFondo = Color.Red
+            players.forEach {
+                if (match.player == it.name){
+                    avatar = it.avatar
+                    colorFondo = it.color
+                }
+            }
+            Column(
+                modifier = Modifier.background(color = Fondo),
+                verticalArrangement = Arrangement.Center
             ) {
-                Image(
-                    painter = painterResource(id = R.drawable.avatar10),
-                    contentDescription = "avatar10",
+                Card(
                     modifier = Modifier
-                        .size(75.dp)
-                        .clip(CircleShape),
-                    contentScale = ContentScale.Crop
-                )
+                        .background(color = Fondo)
+                        .padding(16.dp)
 
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
-                    Text(
-                        text = "Nombre del jugador",
-                        style = TextStyle(
-                            textDecoration = TextDecoration.Underline,
-                            fontSize = 18.sp,
-                            color = Color.White
-                        )
-                    )
-                    Text(
-                        text = "VS Equipo contra el que jugó, Fecha",
-                        style = TextStyle(
-                            fontSize = 14.sp,
-                            color = Color.White
-                        )
-                    )
-                    Text(
-                        text = "puntos", style = TextStyle(
-                            fontSize = 14.sp,
-                            color = Color.White
-                        )
-                    )
-                }
-                if (showCheckbox) {
-                    Checkbox(checked = false, onCheckedChange = {}, enabled = false)
-                }
+                    Row(
+                        modifier = Modifier
+                            .background(color = colorFondo)
+                            .fillMaxWidth()
+                            .padding(10.dp),
+                        horizontalArrangement = Arrangement.SpaceEvenly,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
 
+                        val imageResourceId = LocalContext.current.resources.getIdentifier(avatar,
+                            "drawable", LocalContext.current.packageName)
+
+                        Image(
+                            painter = painterResource(id = imageResourceId),
+                            contentDescription = "avatar",
+                            modifier = Modifier
+                                .size(75.dp)
+                                .clip(CircleShape),
+                            contentScale = ContentScale.Crop
+                        )
+
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.spacedBy(12.dp)
+                        ) {
+                            Text(
+                                text = match.player, style = TextStyle(
+                                    textDecoration = TextDecoration.Underline,
+                                    fontSize = 18.sp,
+                                    color = Color.White
+                                )
+                            )
+                            Text(
+                                text = "VS ${match.opponent}, ${match.day}-${match.month}-${match.year}",
+                                style = TextStyle( fontSize = 14.sp, color = Color.White )
+                            )
+                            Text(
+                                text = "${match.score} puntos", style = TextStyle(
+                                    fontSize = 14.sp, color = Color.White
+                                )
+                            )
+                        }
+                        if (showCheckbox) {
+                            Checkbox(checked = false, onCheckedChange = {}, enabled = false)
+                        }
+
+                    }
+                }
             }
         }
     }
-
 }
 
 @Composable
@@ -312,20 +308,16 @@ fun buttonsAddAndDelete(showCheckbox: MutableState<Boolean>) {
         verticalAlignment = Alignment.CenterVertically
     ) {
         ExtendedFloatingActionButton(
-            onClick = { /*TODO*/ },
-            containerColor = FondoSearchBar
+            onClick = { /*TODO*/ }, containerColor = FondoSearchBar
 
         ) {
             Text(
-                text = "Agregar     ",
-                style = TextStyle(
-                    fontSize = 20.sp,
-                    color = LetraOscura
+                text = "Agregar     ", style = TextStyle(
+                    fontSize = 20.sp, color = LetraOscura
                 )
             )
             Icon(
-                imageVector = Icons.Filled.AddCircle,
-                contentDescription = "Icono para agregar"
+                imageVector = Icons.Filled.AddCircle, contentDescription = "Icono para agregar"
             )
         }
 
@@ -335,15 +327,12 @@ fun buttonsAddAndDelete(showCheckbox: MutableState<Boolean>) {
             modifier = Modifier.padding(16.dp),
         ) {
             Text(
-                text = "Eliminar     ",
-                style = TextStyle(
-                    fontSize = 20.sp,
-                    color = LetraOscura
+                text = "Eliminar     ", style = TextStyle(
+                    fontSize = 20.sp, color = LetraOscura
                 )
             )
             Icon(
-                imageVector = Icons.Filled.Delete,
-                contentDescription = "Icono para eliminar"
+                imageVector = Icons.Filled.Delete, contentDescription = "Icono para eliminar"
             )
         }
     }
