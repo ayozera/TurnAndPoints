@@ -27,8 +27,10 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.AlertDialogDefaults.shape
@@ -37,6 +39,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -46,6 +49,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -75,6 +79,7 @@ import com.ayozera.turnpoints.ui.theme.TurnpointsTheme
 import com.ayozera.turnpoints.ui.theme.Rojo
 import com.ayozera.turnpoints.ui.theme.Fondo
 import com.ayozera.turnpoints.ui.theme.FondoSearchBar
+import com.ayozera.turnpoints.ui.theme.LetraOscura
 import com.ayozera.turnpoints.ui.theme.letrasSearchBar
 
 
@@ -98,31 +103,54 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun showMainScreen(navController: NavHostController) {
+
+    val showCheckbox = remember { mutableStateOf(false) }
+
     Column(
         modifier = Modifier
-            .background(color = Fondo)
+            .fillMaxSize()
+            .background(color = Fondo),
+        verticalArrangement = Arrangement.SpaceBetween
     ) {
-        Text(text = "Bienvenido a la app para saber...")
-        searchBar()
-        playerCard()
-        Button(
-            onClick = { navController.navigate(Routs.NuevaPartida.rout) },
-            colors = ButtonDefaults.buttonColors(
-                containerColor = Color.Blue
-            ),
-            modifier = Modifier.padding(16.dp)
-        ) {
-            Text(
-                text = "Mostrar pantalla Nueva",
-                style = TextStyle(
-                    fontSize = 20.sp,
-                    color = Color.White
+        Column {
+            Text(text = "Bienvenido a la app para saber...")
+            searchBar()
+            playerCard(showCheckbox.value)
+            Button(
+                onClick = { navController.navigate(Routs.NuevaPartida.rout) },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color.Blue
+                ),
+                modifier = Modifier.padding(16.dp)
+            ) {
+                Text(
+                    text = "Mostrar pantalla Nueva",
+                    style = TextStyle(
+                        fontSize = 20.sp,
+                        color = Color.White
+                    )
                 )
-            )
+            }
+
+            Button(
+                onClick = { navController.navigate(Routs.GameInformation.rout) },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color.Blue
+                ),
+                modifier = Modifier.padding(16.dp)
+            ) {
+                Text(
+                    text = "Mostrar información",
+                    style = TextStyle(
+                        fontSize = 20.sp,
+                        color = Color.White
+                    )
+                )
+            }
         }
+        buttonsAddAndDelete(showCheckbox)
     }
 }
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun searchBar() {
@@ -209,7 +237,7 @@ fun searchBar() {
 
 //@Preview(showBackground = true, showSystemUi = true)
 @Composable
-fun playerCard() {
+fun playerCard(showCheckbox: Boolean) {
     Column(
         modifier = Modifier
             .background(color = Fondo),
@@ -226,20 +254,21 @@ fun playerCard() {
                     .background(color = Rojo)
                     .fillMaxWidth()
                     .padding(10.dp),
-                horizontalArrangement = Arrangement.SpaceEvenly
+                horizontalArrangement = Arrangement.SpaceEvenly,
+                verticalAlignment = Alignment.CenterVertically
             ) {
                 Image(
                     painter = painterResource(id = R.drawable.avatar10),
                     contentDescription = "avatar10",
                     modifier = Modifier
-                        .size(100.dp)
+                        .size(75.dp)
                         .clip(CircleShape),
                     contentScale = ContentScale.Crop
                 )
 
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.spacedBy(15.dp)
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
                     Text(
                         text = "Nombre del jugador",
@@ -263,12 +292,64 @@ fun playerCard() {
                         )
                     )
                 }
-                Checkbox(checked = false, onCheckedChange = {}, enabled = false)
+                if (showCheckbox) {
+                    Checkbox(checked = false, onCheckedChange = {}, enabled = false)
+                }
+
             }
         }
     }
 
 }
+
+@Composable
+fun buttonsAddAndDelete(showCheckbox: MutableState<Boolean>) {
+
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        ExtendedFloatingActionButton(
+            onClick = { /*TODO*/ },
+            containerColor = FondoSearchBar
+
+        ) {
+            Text(
+                text = "Agregar     ",
+                style = TextStyle(
+                    fontSize = 20.sp,
+                    color = LetraOscura
+                )
+            )
+            Icon(
+                imageVector = Icons.Filled.AddCircle,
+                contentDescription = "Icono para agregar"
+            )
+        }
+
+        ExtendedFloatingActionButton(
+            onClick = { showCheckbox.value = !showCheckbox.value },
+            containerColor = FondoSearchBar,
+            modifier = Modifier.padding(16.dp),
+        ) {
+            Text(
+                text = "Eliminar     ",
+                style = TextStyle(
+                    fontSize = 20.sp,
+                    color = LetraOscura
+                )
+            )
+            Icon(
+                imageVector = Icons.Filled.Delete,
+                contentDescription = "Icono para eliminar"
+            )
+        }
+    }
+}
+
 
 
 

@@ -133,7 +133,7 @@ class DataUp {
                             8 -> {
                                 year = line.toInt()
                                 counter = -1
-                                matchesList.add(Match(Player(player, avatar), game, type, opponent, score, day, month, year))
+                                matchesList.add(Match(Player(player, avatar), game, GameType.valueOf(type), opponent, score, day, month, year))
                             }
                         }
                     }

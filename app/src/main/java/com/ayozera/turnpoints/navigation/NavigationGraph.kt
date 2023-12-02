@@ -8,6 +8,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.ayozera.turnpoints.activities.PantallaNueva
+import com.ayozera.turnpoints.activities.showInformation
 import com.ayozera.turnpoints.showMainScreen
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -27,6 +28,10 @@ fun NavigationGraph() {
 
         composable(Routs.Juego.rout){
 
+        }
+
+        composable(Routs.GameInformation.rout){
+            showInformation(navController = navController)
         }
     }
 }
