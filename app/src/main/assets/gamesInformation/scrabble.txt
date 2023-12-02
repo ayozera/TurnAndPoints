@@ -1,0 +1,15 @@
+Scrabble es un juego de mesa en el cual cada jugador intenta ganar más puntos mediante la construcción de palabras sobre un tablero de 15x15 casillas cuadradas. Las palabras pueden formarse, siempre y cuando aparezcan en el diccionario estándar, de forma horizontal o verticalmente y se pueden cruzar.
+
+Hasbro posee los derechos de explotación en Estados Unidos y Canadá, Mattel en el resto del mundo. Anteriormente era propiedad de Murfett Regency en Australia, hasta que fue comprado por J. W. Spear & Sons (ahora una filial de Mattel). También es conocido como Literati, Alfapet, Funworder, Skip-A-Cross, Scramble, Spelofun, Palabras Cruzadas, Intelect y Word for Word. El juego se vende en 121 países, en más de 30 idiomas distintos.1​2​3​4​ Hay aproximadamente 4 000 clubes de Scrabble en el mundo.4​
+
+
+Características
+
+Diagrama de la configuración del tablero de Scrabble.
+     Triple palabra
+     Doble palabra
+     Triple letra
+     Doble letra
+El juego se realiza entre 2, 3 o 4 jugadores (en general se juega de a 2), sobre un tablero de 15x15 casillas cuadradas, en las que cada jugador coloca sus fichas. Cada jugador recibe un número específico de fichas (o letras) extraídas aleatoriamente. Las letras se encuentran numeradas con su respectivo valor, obteniéndose por cada palabra formada una puntuación que depende tanto del valor de las letras empleadas como de la posición de dichas letras dentro del tablero.
+
+En total hay 100 fichas, 98 marcadas con letras y dos en blanco (sin puntos, actúan como comodines usándose para reemplazar letras). Según su frecuencia de aparición, las letras tienen más o menos puntos, siempre las de mayor frecuencia valen menos. El tablero tiene también casillas de premiación, que multiplican el número de puntos concedidos: las casillas rojo oscuro son de "triple palabra", las rosas "doble palabra", azul oscuro "triple letra" y celeste "doble letra". El casillero central se marca con una estrella y cuenta como casilla de doble palabra; es obligatorio que el juego comience utilizando esta casilla.

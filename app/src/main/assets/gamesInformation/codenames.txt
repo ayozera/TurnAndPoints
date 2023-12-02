@@ -1,0 +1,26 @@
+Codenames Pictures es un juego para jugar en dos equipos. En cada equipo una persona actuará como líder. Los líderes tienen la información del rol de cada una de las cartas de la mesa y son los encargados de indicar a sus compañeros dónde están los agentes de su color. Para ello, deben crear una combinación que cuente con una palabra y un número. El equipo que antes encuentre a todos sus agentes, gana la partida.
+
+El juego se compone de:
+
+150 cartas cuadradas que contienen una imagen por cada cara que representan varios conceptos. 300 imágenes en total.
+7 losetas cuadradas de agentes rojos.
+7 losetas cuadradas de agentes azules.
+1 loseta cuadrada de agente doble con una cara roja y la otra azul.
+4 losetas cuadradas beis de civiles.
+1 loseta cuadrada negra de asesino.
+60 cartas de localizaciones.
+1 peana de plástico para mantener verticalmente la carta de localización elegida para la partida.
+Bolsas de plástico para guardar los componentes.
+Las reglas en español:
+Si compras el juego en otro idioma diferente al español, no te preocupes. Este juego no tiene ningún texto. Ponemos aquí un enlace al manual oficial en español: reglamento en español
+
+No obstante, os hacemos un resumen de cómo se juega para que os hagáis una idea:
+
+Como preparación, se toman 20 cartas de imágenes al azar y se ponen en la mesa formando una cuadrícula de 4 filas y 5 columnas. Una vez formados los equipos y elegidos los líderes de cada grupo, se tomará una carta de localización al azar, que es la que contiene las emplazamientos de los agentes y el asesino. El color del lateral indica qué equipo empieza y los turnos se van alternando entre ambos equipos.
+
+La carta de localización muestra los roles que toma cada carta de la mesa durante la partida. Los azules y rojos son los agentes que los equipos deben desvelar; los beis, civiles inocentes; y la casilla negra con la cruz indica donde está el asesino. Si algún equipo elige la carta del asesino en algún momento de la partida, pierde inmediatamente.
+
+La secuencia del turno se realiza de la siguiente forma.
+
+El líder del equipo activo debe decir en voz alta a su equipo un código formado por una palabra y un número. El número indica el número de cartas que está relacionando con la palabra que ha elegido como código.
+El equipo del líder, debe tocar una carta con un solo dedo. Si la carta tocada representa un agente de su color, puede volver a tocar otra. Si no hay errores, el número máximo de cartas que pueden tocarse en el mismo turno lo marca el número indicado por el código que ha creado el líder más uno. Ejemplo, el código «Agua 2» da derecho a tocar hasta 3 cartas siempre que las dos primeras hayan sido aciertos.

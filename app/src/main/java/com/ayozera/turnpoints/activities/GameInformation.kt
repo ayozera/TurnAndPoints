@@ -15,9 +15,9 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -30,44 +30,42 @@ import com.ayozera.turnpoints.ui.theme.Rojo
 import java.io.BufferedReader
 import java.io.IOException
 import java.io.InputStreamReader
+import java.security.SecureRandom
+import java.util.Random
 
 
 @Composable
 fun showInformation(navController: NavHostController) {
     val fileContent = readFile("gamesInformation/monopoly.txt", LocalContext.current)
 
-
-    Box(
-        modifier = Modifier
+    Column {
+        Box(modifier = Modifier
             .align(CenterHorizontally)
-            .padding(top = 16.dp)
-    ) {
-        Text(
-            text = "Nombre del juego",
-            fontSize = 30.sp,
-            fontWeight = FontWeight.Bold
-        )
-    }
-    Box() {
-        Image(
-            painter = painterResource(id = R.drawable.monopoly),
-            contentDescription = "Tablero del juego de monopoly",
-            contentScale = ContentScale.FillBounds,
-            modifier = Modifier
-                .fillMaxWidth()
-                .fillMaxHeight(0.5f)
-                .padding(16.dp)
-                .border(border = BorderStroke(width = 1.dp, color = Rojo))
-        )
-    }
-    Column(
-        modifier = Modifier
-            .padding(16.dp, 0.dp)
-            .verticalScroll(rememberScrollState())
-    ) {
-        Text(text = "Estadísticas")
-        Spacer(modifier = Modifier.height(16.dp))
-        Text(text = fileContent)
+            .padding(top = 16.dp)) {
+            Text(
+                text = "Nombre del juego",
+                fontSize = 30.sp,
+                fontWeight = FontWeight.Bold
+            )
+        }
+        Box() {
+            Image(
+                painter = painterResource(id = R.drawable.monopoly),
+                contentDescription = "Tablero del juego de monopoly",
+                contentScale = ContentScale.FillBounds,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .fillMaxHeight(0.5f)
+                    .padding(16.dp)
+                    .border(border = BorderStroke(width = 1.dp, color = Rojo))
+            )
+        }
+        Column (modifier = Modifier.padding(16.dp,0.dp)
+            .verticalScroll(rememberScrollState(), enabled = true)) {
+            Text(text = "Estadísticas")
+            Spacer(modifier = Modifier.height(16.dp))
+            Text(text = fileContent)
+        }
     }
 }
 
