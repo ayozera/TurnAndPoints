@@ -109,8 +109,11 @@ fun showMainScreen(navController: NavHostController) {
                 filtroJuegos = it
             }
             playerCard(showCheckbox.value, filtroJuegos){onClick -> navController.navigate(Routs.GameInformation.rout + "/$onClick")}
-            FloatingActionButton(
+            Button(
                 onClick = { navController.navigate(Routs.NuevaPartida.rout) },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color.Blue
+                ),
                 modifier = Modifier.padding(16.dp)
             ) {
                 Text(
