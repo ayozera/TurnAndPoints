@@ -33,7 +33,6 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
-import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -63,14 +62,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.ayozera.turnpoints.models.DataUp
+import com.ayozera.turnpoints.models.Match
 import com.ayozera.turnpoints.navigation.NavigationGraph
 import com.ayozera.turnpoints.navigation.Routs
 import com.ayozera.turnpoints.ui.theme.TurnpointsTheme
-import com.ayozera.turnpoints.ui.theme.Rojo
 import com.ayozera.turnpoints.ui.theme.Fondo
 import com.ayozera.turnpoints.ui.theme.FondoSearchBar
 import com.ayozera.turnpoints.ui.theme.LetraOscura
-import com.ayozera.turnpoints.ui.theme.jugador1
 import com.ayozera.turnpoints.ui.theme.letrasSearchBar
 
 
@@ -97,6 +95,7 @@ fun showMainScreen(navController: NavHostController) {
     val showCheckbox = remember { mutableStateOf(false) }
     var filtroJuegos by remember { mutableStateOf("") }
     var delete by remember { mutableStateOf(false) }
+    val matches = DataUp.matchLoader(LocalContext.current)
 
     Column(
         modifier = Modifier
@@ -121,6 +120,8 @@ fun showMainScreen(navController: NavHostController) {
                 filtroJuegos = it
             }
             playerCard(
+                matches,
+                delete,
                 showCheckbox.value,
                 filtroJuegos
             ) { onClick -> navController.navigate(Routs.GameInformation.rout + "/$onClick") }
@@ -140,6 +141,11 @@ fun showMainScreen(navController: NavHostController) {
         }
         buttonsAddAndDelete(showCheckbox) { onDeleteClick ->
             delete = onDeleteClick
+        }
+        if (delete) {
+            matches.forEach {
+                DataUp.writer(it, LocalContext.current)
+            }
         }
     }
 }
@@ -229,9 +235,13 @@ fun searchBar(onSearchSelected: (String) -> Unit) {
 
 //@Preview(showBackground = true, showSystemUi = true)
 @Composable
-fun playerCard(showCheckbox: Boolean, filtroJuegos: String, onClick: (String) -> Unit) {
-
-    val matches = DataUp.matchLoader(LocalContext.current)
+fun playerCard(
+    matches: ArrayList<Match>,
+    deleted: Boolean,
+    showCheckbox: Boolean,
+    filtroJuegos: String,
+    onClick: (String) -> Unit
+) {
     val players = DataUp.playerLoader(LocalContext.current)
 
     matches.forEach { match ->
@@ -243,6 +253,10 @@ fun playerCard(showCheckbox: Boolean, filtroJuegos: String, onClick: (String) ->
                     avatar = it.avatar
                     colorFondo = it.color
                 }
+            }
+            var isChecked by remember { mutableStateOf(false) }
+            if (deleted && isChecked) {
+                matches.remove(match)
             }
             Column(
                 modifier = Modifier.background(color = Fondo),
@@ -301,7 +315,13 @@ fun playerCard(showCheckbox: Boolean, filtroJuegos: String, onClick: (String) ->
                             )
                         }
                         if (showCheckbox) {
-                            Checkbox(checked = false, onCheckedChange = {}, enabled = false)
+                            Checkbox(
+                                checked = false,
+                                onCheckedChange = {
+                                    isChecked = !isChecked
+                                },
+                                enabled = false
+                            )
                         }
                     }
                 }
@@ -311,7 +331,7 @@ fun playerCard(showCheckbox: Boolean, filtroJuegos: String, onClick: (String) ->
 }
 
 @Composable
-fun buttonsAddAndDelete(showCheckbox: MutableState<Boolean>, onDeleteClick : (Boolean) -> Unit) {
+fun buttonsAddAndDelete(showCheckbox: MutableState<Boolean>, onDeleteClick: (Boolean) -> Unit) {
 
     Row(
         modifier = Modifier
@@ -325,7 +345,9 @@ fun buttonsAddAndDelete(showCheckbox: MutableState<Boolean>, onDeleteClick : (Bo
 
         ) {
             Text(
-                text = "Agregar     ", style = TextStyle(
+                text = "Agregar",
+                modifier = Modifier.padding(end = 15.dp),
+                style = TextStyle(
                     fontSize = 20.sp, color = LetraOscura
                 )
             )
@@ -343,7 +365,9 @@ fun buttonsAddAndDelete(showCheckbox: MutableState<Boolean>, onDeleteClick : (Bo
             modifier = Modifier.padding(16.dp),
         ) {
             Text(
-                text = "Eliminar     ", style = TextStyle(
+                text = "Eliminar",
+                modifier = Modifier.padding(end = 15.dp),
+                style = TextStyle(
                     fontSize = 20.sp, color = LetraOscura
                 )
             )
