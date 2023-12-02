@@ -1,5 +1,6 @@
 package com.ayozera.turnpoints
 
+import android.content.Context
 import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -31,6 +32,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
@@ -70,6 +72,9 @@ import com.ayozera.turnpoints.ui.theme.Fondo
 import com.ayozera.turnpoints.ui.theme.FondoSearchBar
 import com.ayozera.turnpoints.ui.theme.LetraOscura
 import com.ayozera.turnpoints.ui.theme.letrasSearchBar
+import java.io.BufferedWriter
+import java.io.File
+import java.io.FileWriter
 
 
 class MainActivity : ComponentActivity() {
@@ -95,7 +100,6 @@ fun showMainScreen(navController: NavHostController) {
     val showCheckbox = remember { mutableStateOf(false) }
     var filtroJuegos by remember { mutableStateOf("") }
     var delete by remember { mutableStateOf(false) }
-    val matches = DataUp.matchLoader(LocalContext.current)
 
     Column(
         modifier = Modifier
@@ -120,11 +124,12 @@ fun showMainScreen(navController: NavHostController) {
                 filtroJuegos = it
             }
             playerCard(
-                matches,
-                delete,
                 showCheckbox.value,
-                filtroJuegos
-            ) { onClick -> navController.navigate(Routs.GameInformation.rout + "/$onClick") }
+                filtroJuegos,
+                delete,
+                { onClick -> navController.navigate(Routs.GameInformation.rout + "/$onClick") },
+                { onDeleteClick -> delete = onDeleteClick }
+            )
             Button(
                 onClick = { navController.navigate(Routs.NuevaPartida.rout) },
                 colors = ButtonDefaults.buttonColors(
@@ -141,11 +146,6 @@ fun showMainScreen(navController: NavHostController) {
         }
         buttonsAddAndDelete(showCheckbox) { onDeleteClick ->
             delete = onDeleteClick
-        }
-        if (delete) {
-            matches.forEach {
-                DataUp.writer(it, LocalContext.current)
-            }
         }
     }
 }
@@ -236,28 +236,28 @@ fun searchBar(onSearchSelected: (String) -> Unit) {
 //@Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun playerCard(
-    matches: ArrayList<Match>,
-    deleted: Boolean,
     showCheckbox: Boolean,
     filtroJuegos: String,
-    onClick: (String) -> Unit
+    delete: Boolean,
+    onClick: (String) -> Unit,
+    onDeleteClick: (Boolean) -> Unit
 ) {
+    var matches = DataUp.matchLoader(LocalContext.current)
     val players = DataUp.playerLoader(LocalContext.current)
 
     matches.forEach { match ->
         if (match.game.contains(filtroJuegos)) {
             var avatar = ""
             var colorFondo = Color.Red
+            var isChecked by remember { mutableStateOf(false) }
+
             players.forEach {
                 if (match.player == it.name) {
                     avatar = it.avatar
                     colorFondo = it.color
                 }
             }
-            var isChecked by remember { mutableStateOf(false) }
-            if (deleted && isChecked) {
-                matches.remove(match)
-            }
+
             Column(
                 modifier = Modifier.background(color = Fondo),
                 verticalArrangement = Arrangement.Center
@@ -267,9 +267,7 @@ fun playerCard(
                         .background(color = Fondo)
                         .padding(16.dp)
                         .clickable(onClick = { onClick(match.game) })
-
                 ) {
-
                     Row(
                         modifier = Modifier
                             .background(color = colorFondo)
@@ -278,10 +276,10 @@ fun playerCard(
                         horizontalArrangement = Arrangement.SpaceEvenly,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-
                         val imageResourceId = LocalContext.current.resources.getIdentifier(
                             avatar,
-                            "drawable", LocalContext.current.packageName
+                            "drawable",
+                            LocalContext.current.packageName
                         )
 
                         Image(
@@ -298,7 +296,8 @@ fun playerCard(
                             verticalArrangement = Arrangement.spacedBy(12.dp)
                         ) {
                             Text(
-                                text = match.player, style = TextStyle(
+                                text = match.player,
+                                style = TextStyle(
                                     textDecoration = TextDecoration.Underline,
                                     fontSize = 18.sp,
                                     color = Color.White
@@ -309,25 +308,61 @@ fun playerCard(
                                 style = TextStyle(fontSize = 14.sp, color = Color.White)
                             )
                             Text(
-                                text = "${match.game}: ${match.score} puntos", style = TextStyle(
-                                    fontSize = 14.sp, color = Color.White
-                                )
+                                text = "${match.game}: ${match.score} puntos",
+                                style = TextStyle(fontSize = 14.sp, color = Color.White)
                             )
                         }
+
                         if (showCheckbox) {
                             Checkbox(
-                                checked = false,
+                                checked = isChecked,
                                 onCheckedChange = {
-                                    isChecked = !isChecked
+                                    isChecked = it
+                                    matches.remove(match)
+                                    onDeleteClick(isChecked)
+
                                 },
-                                enabled = false
+                                enabled = true,
+                                colors = CheckboxDefaults.colors(
+                                    checkedColor = Color.White,
+                                    uncheckedColor = Color.White,
+                                    checkmarkColor = Color.Red
+                                )
                             )
                         }
                     }
                 }
             }
         }
+
     }
+    if(delete){
+        overwrite(LocalContext.current, matches)
+    }
+}
+
+fun overwrite(context: Context, matches: ArrayList<Match>){
+    val file = File(context.filesDir, "matches.txt")
+    val writer = BufferedWriter(FileWriter(file))
+    matches.forEach {
+        writer.write(it.player)
+        writer.newLine()
+        writer.write(it.game)
+        writer.newLine()
+        writer.write(it.type)
+        writer.newLine()
+        writer.write(it.opponent)
+        writer.newLine()
+        writer.write(it.score.toString())
+        writer.newLine()
+        writer.write(it.day.toString())
+        writer.newLine()
+        writer.write(it.month.toString())
+        writer.newLine()
+        writer.write(it.year.toString())
+        writer.newLine()
+    }
+    writer.close()
 }
 
 @Composable
