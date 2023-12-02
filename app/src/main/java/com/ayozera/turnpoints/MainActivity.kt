@@ -105,7 +105,6 @@ class MainActivity : ComponentActivity() {
 fun showMainScreen(navController: NavHostController) {
 
     val showCheckbox = remember { mutableStateOf(false) }
-
     Column(
         modifier = Modifier
             .fillMaxSize()
