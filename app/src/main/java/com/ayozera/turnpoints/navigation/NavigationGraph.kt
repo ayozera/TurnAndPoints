@@ -33,7 +33,7 @@ fun NavigationGraph() {
         composable(Routs.GameInformation.rout + "/{game}", arguments = listOf(navArgument("game") {
             type = NavType.StringType })){ backStackEntry ->
             val game = backStackEntry.arguments?.getString("game")
-            showInformation(navController = navController, game)
+            showInformation(navController = navController, game!!)
         }
     }
 }

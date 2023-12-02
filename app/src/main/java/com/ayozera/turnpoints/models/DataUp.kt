@@ -14,7 +14,7 @@ class DataUp {
             val assetManager = context.assets
             val inputStream = assetManager.open("games.txt")
             val reader = BufferedReader(InputStreamReader(inputStream))
-            val writer : FileOutputStream =
+            val writer: FileOutputStream =
                 context.openFileOutput("games.txt", Context.MODE_APPEND)
             reader.forEachLine { line ->
                 writer.write("$line\n".toByteArray())
@@ -22,7 +22,8 @@ class DataUp {
             reader.close()
             writer.close()
         }
-        fun gameLoader(context : Context): List<String> {
+
+        fun gameLoader(context: Context): List<String> {
             val gamesList = ArrayList<String>()
             val file = File(context.filesDir, "games.txt")
             try {
@@ -47,7 +48,7 @@ class DataUp {
             val assetManager = context.assets
             val inputStream = assetManager.open("players.txt")
             val reader = BufferedReader(InputStreamReader(inputStream))
-            val writer : FileOutputStream =
+            val writer: FileOutputStream =
                 context.openFileOutput("players.txt", Context.MODE_APPEND)
             reader.forEachLine { line ->
                 writer.write("$line\n".toByteArray())
@@ -55,7 +56,8 @@ class DataUp {
             reader.close()
             writer.close()
         }
-        fun playerLoader(context : Context): List<Player> {
+
+        fun playerLoader(context: Context): List<Player> {
             val playerList = ArrayList<Player>()
             val file = File(context.filesDir, "players.txt")
             try {
@@ -67,15 +69,15 @@ class DataUp {
                 var counter = -1
                 var player = ""
                 var avatar = ""
-                var color = ""
+
 
                 reader.forEachLine { line ->
                     if (line.isNotBlank()) {
                         counter++
                         when (counter) {
                             0 -> player = line
-                            1 -> color = line
-                            2 -> {
+
+                            1 -> {
                                 avatar = line
                                 counter = -1
                                 playerList.add(Player(player, Util.randomColor(), avatar))
@@ -93,7 +95,7 @@ class DataUp {
             val assetManager = context.assets
             val inputStream = assetManager.open("matches.txt")
             val reader = BufferedReader(InputStreamReader(inputStream))
-            val writer : FileOutputStream =
+            val writer: FileOutputStream =
                 context.openFileOutput("matches.txt", Context.MODE_APPEND)
             reader.forEachLine { line ->
                 writer.write("$line\n".toByteArray())
@@ -101,7 +103,8 @@ class DataUp {
             reader.close()
             writer.close()
         }
-        fun matchLoader(context : Context): ArrayList<Match> {
+
+        fun matchLoader(context: Context): ArrayList<Match> {
             val matchesList = ArrayList<Match>()
             val file = File(context.filesDir, "matches.txt")
             try {
@@ -135,12 +138,23 @@ class DataUp {
                             7 -> {
                                 year = line.toInt()
                                 counter = -1
-/*                                players.forEach {
-                                    if (it.name == player) {
-                                        avatar = it.avatar
-                                    }
-                                }*/
-                                matchesList.add(Match(player, game, type, opponent, score, day, month, year))
+                                /*                                players.forEach {
+                                                                    if (it.name == player) {
+                                                                        avatar = it.avatar
+                                                                    }
+                                                                }*/
+                                matchesList.add(
+                                    Match(
+                                        player,
+                                        game,
+                                        type,
+                                        opponent,
+                                        score,
+                                        day,
+                                        month,
+                                        year
+                                    )
+                                )
                             }
                         }
                     }
@@ -150,6 +164,7 @@ class DataUp {
             }
             return matchesList
         }
+
         fun writer(match: Match, context: Context) {
             val content = "\n${match.player}\n${match.game}\n${match.type}\n" +
                     "${match.opponent}\n${match.score}\n${match.day}\n${match.month}\n${match.year}\n"

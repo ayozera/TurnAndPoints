@@ -8,6 +8,7 @@ import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -102,7 +103,7 @@ fun showMainScreen(navController: NavHostController) {
             searchBar() {
                 filtroJuegos = it
             }
-            playerCard(showCheckbox.value, filtroJuegos)
+            playerCard(showCheckbox.value, filtroJuegos){onClick -> navController.navigate(Routs.GameInformation.rout + "/$onClick")}
             Button(
                 onClick = { navController.navigate(Routs.NuevaPartida.rout) },
                 colors = ButtonDefaults.buttonColors(
@@ -118,7 +119,7 @@ fun showMainScreen(navController: NavHostController) {
             }
 
             Button(
-                onClick = { navController.navigate(Routs.GameInformation.rout) },
+                onClick = { navController.navigate(Routs.GameInformation.rout)},
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Color.Blue
                 ),
@@ -221,9 +222,11 @@ fun searchBar(onSearchSelected: (String) -> Unit) {
 
 //@Preview(showBackground = true, showSystemUi = true)
 @Composable
-fun playerCard(showCheckbox: Boolean, filtroJuegos: String) {
+fun playerCard(showCheckbox: Boolean, filtroJuegos: String, onClick: (String) -> Unit ){
+
     val matches = DataUp.matchLoader(LocalContext.current)
     val players = DataUp.playerLoader(LocalContext.current)
+
     matches.forEach {match ->
         if (match.game.contains(filtroJuegos)) {
             var avatar = ""
@@ -242,6 +245,7 @@ fun playerCard(showCheckbox: Boolean, filtroJuegos: String) {
                     modifier = Modifier
                         .background(color = Fondo)
                         .padding(16.dp)
+                        .clickable(onClick = { onClick(match.game)  })
 
                 ) {
 
