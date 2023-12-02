@@ -94,6 +94,7 @@ fun showMainScreen(navController: NavHostController) {
 
     val showCheckbox = remember { mutableStateOf(false) }
     var filtroJuegos by remember { mutableStateOf("") }
+    var delete by remember { mutableStateOf(false) }
 
     Column(
         modifier = Modifier
@@ -137,7 +138,9 @@ fun showMainScreen(navController: NavHostController) {
                 )
             }
         }
-        buttonsAddAndDelete(showCheckbox)
+        buttonsAddAndDelete(showCheckbox) { onDeleteClick ->
+            delete = onDeleteClick
+        }
     }
 }
 
@@ -299,7 +302,6 @@ fun playerCard(showCheckbox: Boolean, filtroJuegos: String, onClick: (String) ->
                         if (showCheckbox) {
                             Checkbox(checked = false, onCheckedChange = {}, enabled = false)
                         }
-
                     }
                 }
             }
@@ -308,7 +310,7 @@ fun playerCard(showCheckbox: Boolean, filtroJuegos: String, onClick: (String) ->
 }
 
 @Composable
-fun buttonsAddAndDelete(showCheckbox: MutableState<Boolean>) {
+fun buttonsAddAndDelete(showCheckbox: MutableState<Boolean>, onDeleteClick : (Boolean) -> Unit) {
 
     Row(
         modifier = Modifier
@@ -332,7 +334,10 @@ fun buttonsAddAndDelete(showCheckbox: MutableState<Boolean>) {
         }
 
         ExtendedFloatingActionButton(
-            onClick = { showCheckbox.value = !showCheckbox.value },
+            onClick = {
+                showCheckbox.value = !showCheckbox.value
+                onDeleteClick(!showCheckbox.value)
+            },
             containerColor = FondoSearchBar,
             modifier = Modifier.padding(16.dp),
         ) {
