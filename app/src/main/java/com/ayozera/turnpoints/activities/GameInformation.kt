@@ -17,6 +17,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -25,47 +26,49 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.ayozera.turnpoints.R
+import com.ayozera.turnpoints.models.Match
 import com.ayozera.turnpoints.ui.theme.Rojo
 import java.io.BufferedReader
 import java.io.IOException
 import java.io.InputStreamReader
+import java.security.SecureRandom
+import java.util.Random
 
 
 @Composable
-fun showInformation(navController: NavHostController) {
-    val fileContent = readFile("gamesInformation/monopoly.txt", LocalContext.current)
+fun showInformation(navController: NavHostController, context: Context, match: Match) {
 
+    val fileContent = readFile("gamesInformation/${match.game}.txt", context)
+    val resourceId = context.resources.getIdentifier(match.game, "drawable", context.packageName)
 
-    Box(
-        modifier = Modifier
-            .padding(top = 16.dp)
-    ) {
-        Text(
-            text = "Nombre del juego",
-            fontSize = 30.sp,
-            fontWeight = FontWeight.Bold
-        )
-    }
-    Box() {
-        Image(
-            painter = painterResource(id = R.drawable.monopoly),
-            contentDescription = "Tablero del juego de monopoly",
-            contentScale = ContentScale.FillBounds,
-            modifier = Modifier
-                .fillMaxWidth()
-                .fillMaxHeight(0.5f)
-                .padding(16.dp)
-                .border(border = BorderStroke(width = 1.dp, color = Rojo))
-        )
-    }
-    Column(
-        modifier = Modifier
-            .padding(16.dp, 0.dp)
-            .verticalScroll(rememberScrollState())
-    ) {
-        Text(text = "Estadísticas")
-        Spacer(modifier = Modifier.height(16.dp))
-        Text(text = fileContent)
+    Column {
+        Box(modifier = Modifier
+            .align(CenterHorizontally)
+            .padding(top = 16.dp)) {
+            Text(
+                text = match.game,
+                fontSize = 30.sp,
+                fontWeight = FontWeight.Bold
+            )
+        }
+        Box() {
+            Image(
+                painter = painterResource(id = resourceId),
+                contentDescription = "Tablero del juego de ${match.game}",
+                contentScale = ContentScale.FillBounds,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .fillMaxHeight(0.5f)
+                    .padding(16.dp)
+                    .border(border = BorderStroke(width = 1.dp, color = Rojo))
+            )
+        }
+        Column (modifier = Modifier.padding(16.dp,0.dp)
+            .verticalScroll(rememberScrollState(), enabled = true)) {
+            Text(text = "Estadísticas")
+            Spacer(modifier = Modifier.height(16.dp))
+            Text(text = fileContent)
+        }
     }
 }
 
