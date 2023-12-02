@@ -122,7 +122,7 @@ fun PantallaNueva(navController: NavHostController) {
 @Composable
 fun PlayerSelection(players: List<String>, onPlayerSelection: (String) -> Unit) {
     var expandedPlayer by remember { mutableStateOf(false) }
-    var selectedPlayer by remember { mutableStateOf(players.first()) }
+    var selectedPlayer by remember { mutableStateOf("") }
     Column() {
 
         Text(text = "Introduce el nombre del jugador")
@@ -153,13 +153,13 @@ fun PlayerSelection(players: List<String>, onPlayerSelection: (String) -> Unit) 
 @Composable
 fun GameSelection(games: List<String>, onGameSelection: (String) -> Unit) {
     var expandedGame by remember { mutableStateOf(false) }
-    var selectedGame by remember { mutableStateOf(games.first()) }
+    var selectedGame by remember { mutableStateOf("") }
     Column {
 
         Text(text = "El nombre del juego")
         TextField(value = selectedGame,
             onValueChange = {},
-            label = { Text("Seleccione un jugador") },
+            label = { Text("¿Cuál fue el juego?") },
             readOnly = true,
             trailingIcon = {
                 IconButton(onClick = { expandedGame = true }) {
@@ -182,7 +182,7 @@ fun GameSelection(games: List<String>, onGameSelection: (String) -> Unit) {
 
 @Composable
 fun TypeSelection(gameTypes: List<String>, onTypeSelection: (String) -> Unit) {
-    var selectedGameType by remember { mutableStateOf(gameTypes.first()) }
+    var selectedGameType by remember { mutableStateOf("") }
     Column {
         Text(
             text = "Selecciona uno o más tipos",
@@ -239,7 +239,7 @@ fun ScoreSelection(onScoreSelection: (Int) -> Unit) {
 @Composable
 fun OpponentSelection(players: List<String>, onPlayerSelection: (String) -> Unit) {
     var expandedPlayer2 by remember { mutableStateOf(false) }
-    var selectedPlayer2 by remember { mutableStateOf(players.first()) }
+    var selectedPlayer2 by remember { mutableStateOf("") }
     Column {
         Text(text = "Jugador contra quien jugó")
         TextField(value = selectedPlayer2,
