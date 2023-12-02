@@ -36,8 +36,8 @@ import java.util.Random
 
 
 @Composable
-fun showInformation(navController: NavHostController, context: Context, match: Match) {
-
+fun showInformation(navController: NavHostController, match: Match) {
+    val context = LocalContext.current
     val fileContent = readFile("gamesInformation/${match.game}.txt", context)
     val resourceId = context.resources.getIdentifier(match.game, "drawable", context.packageName)
 
