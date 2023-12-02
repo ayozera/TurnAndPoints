@@ -67,9 +67,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.ayozera.turnpoints.activities.PantallaNueva
-import com.ayozera.turnpoints.modelo.DataUp
-import com.ayozera.turnpoints.navegacion.NavigationGraph
-import com.ayozera.turnpoints.navegacion.Routs
+import com.ayozera.turnpoints.models.DataUp
+import com.ayozera.turnpoints.navigation.NavigationGraph
+import com.ayozera.turnpoints.navigation.Routs
 import com.ayozera.turnpoints.ui.theme.TurnpointsTheme
 import com.ayozera.turnpoints.ui.theme.Rojo
 import com.ayozera.turnpoints.ui.theme.Fondo
