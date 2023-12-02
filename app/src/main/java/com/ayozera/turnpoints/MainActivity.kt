@@ -18,7 +18,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.icons.filled.Clear
@@ -31,6 +33,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -95,20 +98,19 @@ fun showMainScreen(navController: NavHostController) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(color = Fondo),
-        verticalArrangement = Arrangement.SpaceBetween
-    ) {
+            .background(color = Fondo)
+            .verticalScroll(rememberScrollState()),
+        verticalArrangement = Arrangement.SpaceBetween,
+
+        ) {
         Column {
             Text(text = "Bienvenido a la app para saber...")
             searchBar() {
                 filtroJuegos = it
             }
             playerCard(showCheckbox.value, filtroJuegos){onClick -> navController.navigate(Routs.GameInformation.rout + "/$onClick")}
-            Button(
+            FloatingActionButton(
                 onClick = { navController.navigate(Routs.NuevaPartida.rout) },
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Color.Blue
-                ),
                 modifier = Modifier.padding(16.dp)
             ) {
                 Text(
@@ -245,7 +247,7 @@ fun playerCard(showCheckbox: Boolean, filtroJuegos: String, onClick: (String) ->
                     modifier = Modifier
                         .background(color = Fondo)
                         .padding(16.dp)
-                        .clickable(onClick = { onClick(match.game)  })
+                        .clickable(onClick = { onClick(match.game) })
 
                 ) {
 
@@ -286,7 +288,7 @@ fun playerCard(showCheckbox: Boolean, filtroJuegos: String, onClick: (String) ->
                                 style = TextStyle( fontSize = 14.sp, color = Color.White )
                             )
                             Text(
-                                text = "${match.score} puntos", style = TextStyle(
+                                text = "${match.game}: ${match.score} puntos", style = TextStyle(
                                     fontSize = 14.sp, color = Color.White
                                 )
                             )
