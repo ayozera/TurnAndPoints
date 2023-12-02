@@ -2,9 +2,9 @@ package com.ayozera.turnpoints.models
 
 data class Match(
     val player: Player,
-    val game: String,
-    val type: String,
-    val opponent: String,
+    val game: Game,
+    val type: GameType,
+    val opponent: Player,
     val score: Int,
     val day: Int,
     val month: Int,

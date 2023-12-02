@@ -35,6 +35,7 @@ import androidx.compose.material3.AlertDialogDefaults.shape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -209,53 +210,60 @@ fun searchBar() {
 //@Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun playerCard() {
-
-    Card(
+    Column(
         modifier = Modifier
-            .background(color = Fondo)
-            .padding(16.dp)
+            .background(color = Fondo),
+        verticalArrangement = Arrangement.Center
     ) {
-        Row(
+        Card(
             modifier = Modifier
-                .background(color = Rojo)
-                .fillMaxWidth()
-                .padding(10.dp),
-            horizontalArrangement = Arrangement.SpaceEvenly
-        ) {
-            Image(
-                painter = painterResource(id = R.drawable.avatar10),
-                contentDescription = "avatar10",
-                modifier = Modifier
-                    .size(100.dp)
-                    .clip(CircleShape),
-                contentScale = ContentScale.Crop
-            )
+                .background(color = Fondo)
+                .padding(16.dp)
 
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(15.dp)
+        ) {
+            Row(
+                modifier = Modifier
+                    .background(color = Rojo)
+                    .fillMaxWidth()
+                    .padding(10.dp),
+                horizontalArrangement = Arrangement.SpaceEvenly
             ) {
-                Text(
-                    text = "Nombre del jugador",
-                    style = TextStyle(
-                        textDecoration = TextDecoration.Underline,
-                        fontSize = 18.sp,
-                        color = Color.White
-                    )
+                Image(
+                    painter = painterResource(id = R.drawable.avatar10),
+                    contentDescription = "avatar10",
+                    modifier = Modifier
+                        .size(100.dp)
+                        .clip(CircleShape),
+                    contentScale = ContentScale.Crop
                 )
-                Text(
-                    text = "VS Equipo contra el que jugó, Fecha",
-                    style = TextStyle(
-                        fontSize = 14.sp,
-                        color = Color.White
+
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(15.dp)
+                ) {
+                    Text(
+                        text = "Nombre del jugador",
+                        style = TextStyle(
+                            textDecoration = TextDecoration.Underline,
+                            fontSize = 18.sp,
+                            color = Color.White
+                        )
                     )
-                )
-                Text(
-                    text = "puntos", style = TextStyle(
-                        fontSize = 14.sp,
-                        color = Color.White
+                    Text(
+                        text = "VS Equipo contra el que jugó, Fecha",
+                        style = TextStyle(
+                            fontSize = 14.sp,
+                            color = Color.White
+                        )
                     )
-                )
+                    Text(
+                        text = "puntos", style = TextStyle(
+                            fontSize = 14.sp,
+                            color = Color.White
+                        )
+                    )
+                }
+                Checkbox(checked = false, onCheckedChange = {}, enabled = false)
             }
         }
     }
