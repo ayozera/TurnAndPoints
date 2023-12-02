@@ -118,22 +118,27 @@ class DataUp {
                 var day = 0
                 var month = 0
                 var year = 0
+                val players = playerLoader(context)
                 reader.forEachLine { line ->
                     if (line.isNotBlank()) {
                         counter++
                         when (counter) {
                             0 -> player = line
-                            1 -> avatar = line
-                            2 -> game = line
-                            3 -> type = line
-                            4 -> opponent = line
-                            5 -> score = line.toInt()
-                            6 -> day = line.toInt()
-                            7 -> month = line.toInt()
-                            8 -> {
+                            1 -> game = line
+                            2 -> type = line
+                            3 -> opponent = line
+                            4 -> score = line.toInt()
+                            5 -> day = line.toInt()
+                            6 -> month = line.toInt()
+                            7 -> {
                                 year = line.toInt()
                                 counter = -1
-                                matchesList.add(Match(Player(player, avatar), game, GameType.valueOf(type), opponent, score, day, month, year))
+/*                                players.forEach {
+                                    if (it.name == player) {
+                                        avatar = it.avatar
+                                    }
+                                }*/
+                                matchesList.add(Match(player, game, type, opponent, score, day, month, year))
                             }
                         }
                     }
