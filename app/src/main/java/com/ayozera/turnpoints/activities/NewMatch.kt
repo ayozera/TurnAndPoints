@@ -184,7 +184,6 @@ fun GameSelection(games: List<String>, onGameSelection: (String) -> Unit) {
 fun TypeSelection(gameTypes: List<String>, onTypeSelection: (String) -> Unit) {
     var selectedGameType by remember { mutableStateOf(gameTypes.first()) }
     Column {
-
         Text(
             text = "Selecciona uno o más tipos",
             modifier = Modifier.padding(63.dp, 0.dp, 0.dp, 0.dp)
