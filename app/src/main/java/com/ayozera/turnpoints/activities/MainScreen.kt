@@ -1,24 +1,21 @@
 package com.ayozera.turnpoints.activities
 
-import android.content.res.Configuration
-import android.os.Bundle
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.icons.filled.Clear
@@ -40,7 +37,6 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -48,7 +44,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
@@ -68,15 +63,22 @@ import com.ayozera.turnpoints.ui.theme.LetraOscura
 import com.ayozera.turnpoints.ui.theme.PurpleGrey40
 import com.ayozera.turnpoints.ui.theme.letrasSearchBar
 
-
 @Composable
 fun ShowMainScreen(navController: NavHostController) {
 
-    val showCheckbox = rememberSaveable { mutableStateOf(false) }
-    var filtroJuegos = rememberSaveable { mutableStateOf("") }
-    val delete = rememberSaveable { mutableStateOf(false) }
+    val showCheckbox = remember { mutableStateOf(false) }
+    var filtroJuegos by remember { mutableStateOf("") }
+    val delete = remember { mutableStateOf(false) }
     var matches = DataUp.matchLoader(LocalContext.current)
     val players = DataUp.playerLoader(LocalContext.current)
+    var matchesDeleted = remember { mutableStateOf(ArrayList<Match>()) }
+
+    if (delete) {
+        matchesDeleted.value.forEach {
+            matches.remove(it)
+        }
+        DataUp.overwrite(LocalContext.current, matches)
+    }
 
     val configuration = LocalConfiguration.current
     val isPortrait = configuration.orientation == Configuration.ORIENTATION_PORTRAIT
@@ -104,9 +106,8 @@ fun MainScreenPortraitMode(
             .fillMaxSize()
             .background(color = Fondo),
         verticalArrangement = Arrangement.SpaceBetween,
-        horizontalAlignment = Alignment.CenterHorizontally
 
-    ) {
+        ) {
         Column {
             WelcomeText()
             SearchBar() {
@@ -183,6 +184,32 @@ fun WelcomeText() {
     }
 }
 
+            LazyColumn {
+                items(matches) { match ->
+                    PlayerCard(
+                        showCheckbox.value,
+                        filtroJuegos,
+                        match,
+                        players,
+                        { onClick -> navController.navigate(Routs.GameInformation.rout + "/$onClick") },
+                        { onChekedClick ->
+                            run {
+                                var found = false
+                                matchesDeleted.value.forEach {
+                                    if (it == onChekedClick) {
+                                        found = true
+                                    }
+                                }
+                                if (!found) {
+                                    matchesDeleted.value.add(onChekedClick)
+                                }
+                            }
+                        }
+                    )
+                }
+            }
+        }
+    }
 @Composable
 fun ShowCardsColumn(
     matches: ArrayList<Match>,
@@ -296,11 +323,10 @@ fun SearchBar(onSearchSelected: (String) -> Unit) {
 fun PlayerCard(
     showCheckbox: Boolean,
     filtroJuegos: String,
-    delete: MutableState<Boolean>,
     match: Match,
     players: List<Player>,
     onClick: (String) -> Unit,
-    onDeleteClick: (Boolean) -> Unit
+    onChekedClick: (Match) -> Unit
 ) {
 
     if (match.game.contains(filtroJuegos)) {
@@ -376,7 +402,7 @@ fun PlayerCard(
                             checked = isChecked,
                             onCheckedChange = {
                                 isChecked = it
-                                onDeleteClick(isChecked)
+                                onChekedClick(match)
 
                             },
                             enabled = true,
