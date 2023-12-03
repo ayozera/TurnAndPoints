@@ -3,14 +3,20 @@ package com.ayozera.turnpoints.activities
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.Divider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -21,6 +27,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -34,6 +41,7 @@ import com.ayozera.turnpoints.navigation.Routs
 import com.ayozera.turnpoints.ui.theme.Fondo
 import com.ayozera.turnpoints.ui.theme.LetraClara
 import com.ayozera.turnpoints.ui.theme.LetraOscura
+import com.ayozera.turnpoints.ui.theme.jugador9
 
 @Composable
 fun Signup(navController: NavHostController) {
@@ -43,6 +51,7 @@ fun Signup(navController: NavHostController) {
     val keys = DataUp.credentialLoader(LocalContext.current)
     var openDialogExits by remember { mutableStateOf(false) }
     var openDialogPasswords by remember { mutableStateOf(false) }
+    var openDialogGuest by remember { mutableStateOf(false) }
 
     val context = LocalContext.current
     Column(
@@ -52,23 +61,24 @@ fun Signup(navController: NavHostController) {
             .background(color = Fondo)
     ) {
         Row(
-            horizontalArrangement = Arrangement.Center,
+            horizontalArrangement = Arrangement.Start,
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
                 .fillMaxHeight(0.10f)
                 .background(LetraClara)
                 .fillMaxWidth()
         ) {
+            ArrowBack(navController)
             Text(
                 text = "Turn & Points",
-                color = LetraOscura
+                color = LetraOscura,
+                modifier = Modifier.padding(start = 50.dp)
             )
             Image(
                 painter = painterResource(id = R.drawable.dados_removebg_preview),
                 contentDescription = "Logo con unos dados"
             )
         }
-
 
         Column(
             verticalArrangement = Arrangement.Center,
@@ -96,20 +106,24 @@ fun Signup(navController: NavHostController) {
             Spacer(modifier = Modifier.padding(50.dp))
             Button(onClick = {
                 var alreadyExits = false
-                keys.forEach {
-                    if (it.user == textUser) {
-                        alreadyExits = true
+                if (textUser.isNotBlank()){
+                    keys.forEach {
+                        if (it.user == textUser) {
+                            alreadyExits = true
+                        }
                     }
-                }
-                if (!alreadyExits) {
-                    if (textPassword == textPassword2) {
-                        writeCredential(Credential(textUser, textPassword), context)
-                        navController.navigate(Routs.MainScreen.rout)
+                    if (!alreadyExits) {
+                        if (textPassword == textPassword2) {
+                            writeCredential(Credential(textUser, textPassword), context)
+                            navController.navigate(Routs.MainScreen.rout)
+                        } else {
+                            openDialogPasswords = true
+                        }
                     } else {
-                        openDialogPasswords = true
+                        openDialogExits = true
                     }
                 } else {
-                    openDialogExits = true
+                    openDialogGuest = true
                 }
 
             }) {
@@ -125,6 +139,36 @@ fun Signup(navController: NavHostController) {
         if (openDialogPasswords) {
             SignupDialogError {
                 openDialogPasswords = false
+            }
+        }
+        if (openDialogGuest) {
+            GuestDialog {
+                openDialogGuest = false
+                navController.navigate(Routs.MainScreen.rout)
+            }
+        }
+    }
+}
+
+@Composable
+fun ArrowBack(navController: NavHostController) {
+    Box() {
+        IconButton(
+            onClick = { navController.popBackStack() },
+            modifier = Modifier.align(Alignment.CenterStart)
+                .padding(20.dp)
+        ) {
+            Box(
+                modifier = Modifier
+                    .background(color = jugador9)
+                    .size(48.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.Filled.ArrowBack,
+                    contentDescription = "Atrás",
+                    modifier = Modifier.align(Alignment.Center),
+                    tint = Color.White
+                )
             }
         }
     }
@@ -170,6 +214,33 @@ fun UserAlreadyExitsDialog(onDismissClick: () -> Unit) {
                 },
                 text = {
                     Text("El nombre de usuario ya está en uso")
+                },
+                confirmButton = {
+                    Button(
+                        onClick = {
+                            onDismissClick()
+                        }) {
+                        Text("Entendido")
+                    }
+                },
+            )
+        }
+    }
+}
+
+@Composable
+fun GuestDialog(onDismissClick: () -> Unit) {
+    MaterialTheme {
+        Column {
+            androidx.compose.material3.AlertDialog(
+                onDismissRequest = {
+                    onDismissClick()
+                },
+                title = {
+                    Text(text = "Bienvenido")
+                },
+                text = {
+                    Text("Está accediendo como invitado")
                 },
                 confirmButton = {
                     Button(
