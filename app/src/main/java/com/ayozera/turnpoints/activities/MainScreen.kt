@@ -54,25 +54,28 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.ayozera.turnpoints.models.DataUp
+import com.ayozera.turnpoints.models.Match
+import com.ayozera.turnpoints.models.Player
 import com.ayozera.turnpoints.navigation.Routs
 import com.ayozera.turnpoints.ui.theme.Fondo
 import com.ayozera.turnpoints.ui.theme.FondoSearchBar
 import com.ayozera.turnpoints.ui.theme.LetraOscura
+import com.ayozera.turnpoints.ui.theme.PurpleGrey40
 import com.ayozera.turnpoints.ui.theme.letrasSearchBar
-
 
 @Composable
 fun ShowMainScreen(navController: NavHostController) {
 
     val showCheckbox = remember { mutableStateOf(false) }
     var filtroJuegos by remember { mutableStateOf("") }
-    var delete = remember { mutableStateOf(false) }
+    val delete = remember { mutableStateOf(false) }
+    var matches = DataUp.matchLoader(LocalContext.current)
+    val players = DataUp.playerLoader(LocalContext.current)
 
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(color = Fondo)
-            .verticalScroll(rememberScrollState()),
+            .background(color = Fondo),
         verticalArrangement = Arrangement.SpaceBetween,
 
         ) {
@@ -90,13 +93,20 @@ fun ShowMainScreen(navController: NavHostController) {
             SearchBar() {
                 filtroJuegos = it
             }
-            PlayerCard(
-                showCheckbox.value,
-                filtroJuegos,
-                delete,
-                { onClick -> navController.navigate(Routs.GameInformation.rout + "/$onClick") },
-                { onDeleteClick -> delete.value = onDeleteClick }
-            )
+
+            LazyColumn {
+                items(matches) { match ->
+                    PlayerCard(
+                        showCheckbox.value,
+                        filtroJuegos,
+                        delete,
+                        match,
+                        players,
+                        { onClick -> navController.navigate(Routs.GameInformation.rout + "/$onClick") },
+                        { onDeleteClick -> delete.value = onDeleteClick }
+                    )
+                }
+            }
 
         }
         ButtonsAddAndDelete(navController, showCheckbox) { onDeleteClick ->
@@ -110,7 +120,6 @@ fun ShowMainScreen(navController: NavHostController) {
 fun SearchBar(onSearchSelected: (String) -> Unit) {
 
     val games = DataUp.gameLoader(LocalContext.current)
-
     var query by remember { mutableStateOf("") }
     var isActive by remember { mutableStateOf(false) }
     var filteredGames by remember { mutableStateOf(games) }
@@ -193,111 +202,108 @@ fun PlayerCard(
     showCheckbox: Boolean,
     filtroJuegos: String,
     delete: MutableState<Boolean>,
+    match: Match,
+    players: List<Player>,
     onClick: (String) -> Unit,
     onDeleteClick: (Boolean) -> Unit
 ) {
-    var matches = DataUp.matchLoader(LocalContext.current)
-    val players = DataUp.playerLoader(LocalContext.current)
 
-    matches.forEach { match ->
-        if (match.game.contains(filtroJuegos)) {
-            var avatar = ""
-            var colorFondo = Color.Red
-            var isChecked by remember { mutableStateOf(false) }
+    if (match.game.contains(filtroJuegos)) {
+        var avatar = ""
+        var colorFondo = Color.Red
+        var isChecked by remember { mutableStateOf(false) }
 
-            players.forEach {
-                if (match.player == it.name) {
-                    avatar = it.avatar
-                    colorFondo = it.color
-                }
+        players.forEach {
+            if (match.player == it.name) {
+                avatar = it.avatar
+                colorFondo = it.color
             }
+        }
 
-            Column(
-                modifier = Modifier.background(color = Fondo),
-                verticalArrangement = Arrangement.Center
+        Column(
+            verticalArrangement = Arrangement.Center,
+            modifier = Modifier
+                .background(color = Fondo)
+        ) {
+            Card(
+                modifier = Modifier
+                    .background(color = Fondo)
+                    .padding(16.dp)
+                    .clickable(onClick = { onClick(match.game) })
             ) {
-                Card(
+                Row(
                     modifier = Modifier
-                        .background(color = Fondo)
-                        .padding(16.dp)
-                        .clickable(onClick = { onClick(match.game) })
+                        .background(color = colorFondo)
+                        .fillMaxWidth()
+                        .padding(10.dp),
+                    horizontalArrangement = Arrangement.SpaceEvenly,
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Row(
+                    val imageResourceId = LocalContext.current.resources.getIdentifier(
+                        avatar,
+                        "drawable",
+                        LocalContext.current.packageName
+                    )
+
+                    Image(
+                        painter = painterResource(id = imageResourceId),
+                        contentDescription = "avatar",
                         modifier = Modifier
-                            .background(color = colorFondo)
-                            .fillMaxWidth()
-                            .padding(10.dp),
-                        horizontalArrangement = Arrangement.SpaceEvenly,
-                        verticalAlignment = Alignment.CenterVertically
+                            .size(100.dp)
+                            .clip(CircleShape),
+                        contentScale = ContentScale.Crop
+                    )
+
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
-                        val imageResourceId = LocalContext.current.resources.getIdentifier(
-                            avatar,
-                            "drawable",
-                            LocalContext.current.packageName
+                        Text(
+                            text = match.player,
+                            style = TextStyle(
+                                textDecoration = TextDecoration.Underline,
+                                fontSize = 24.sp,
+                                color = Color.White
+                            )
                         )
-
-                        Image(
-                            painter = painterResource(id = imageResourceId),
-                            contentDescription = "avatar",
-                            modifier = Modifier
-                                .size(75.dp)
-                                .clip(CircleShape),
-                            contentScale = ContentScale.Crop
+                        Text(
+                            text = "VS ${match.opponent}, ${match.day}-${match.month}-${match.year}",
+                            style = TextStyle(fontSize = 18.sp, color = Color.White)
                         )
+                        Text(
+                            text = "${match.game}: ${match.score} puntos",
+                            style = TextStyle(fontSize = 18.sp, color = Color.White)
+                        )
+                    }
 
-                        Column(
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.spacedBy(12.dp)
-                        ) {
-                            Text(
-                                text = match.player,
-                                style = TextStyle(
-                                    textDecoration = TextDecoration.Underline,
-                                    fontSize = 18.sp,
-                                    color = Color.White
-                                )
-                            )
-                            Text(
-                                text = "VS ${match.opponent}, ${match.day}-${match.month}-${match.year}",
-                                style = TextStyle(fontSize = 14.sp, color = Color.White)
-                            )
-                            Text(
-                                text = "${match.game}: ${match.score} puntos",
-                                style = TextStyle(fontSize = 14.sp, color = Color.White)
-                            )
-                        }
+                    if (showCheckbox) {
+                        Checkbox(
+                            checked = isChecked,
+                            onCheckedChange = {
+                                isChecked = it
+                                onDeleteClick(isChecked)
 
-                        if (showCheckbox) {
-                            Checkbox(
-                                checked = isChecked,
-                                onCheckedChange = {
-                                    isChecked = it
-                                    matches.remove(match)
-                                    onDeleteClick(isChecked)
-
-                                },
-                                enabled = true,
-                                colors = CheckboxDefaults.colors(
-                                    checkedColor = Color.White,
-                                    uncheckedColor = Color.White,
-                                    checkmarkColor = Color.Red
-                                )
+                            },
+                            enabled = true,
+                            colors = CheckboxDefaults.colors(
+                                checkedColor = Color.White,
+                                uncheckedColor = Color.White,
+                                checkmarkColor = Color.Red
                             )
-                        }
+                        )
                     }
                 }
             }
         }
     }
-    if(delete.value){
-        DataUp.overwrite(LocalContext.current, matches)
-    }
 }
 
-
-
 @Composable
-fun ButtonsAddAndDelete(navController : NavHostController, showCheckbox: MutableState<Boolean>, onDeleteClick: (Boolean) -> Unit) {
+fun ButtonsAddAndDelete(
+    navController: NavHostController,
+    showCheckbox: MutableState<Boolean>,
+    onDeleteClick: (Boolean) -> Unit
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -306,7 +312,11 @@ fun ButtonsAddAndDelete(navController : NavHostController, showCheckbox: Mutable
         verticalAlignment = Alignment.CenterVertically
     ) {
         ExtendedFloatingActionButton(
-            onClick = {  navController.navigate(Routs.NuevaPartida.rout) }, containerColor = FondoSearchBar
+            onClick = {
+                if (!showCheckbox.value) {
+                    navController.navigate(Routs.NuevaPartida.rout)
+                }
+            }, containerColor = if (!showCheckbox.value) FondoSearchBar else PurpleGrey40
         ) {
             Text(
                 text = "Agregar",

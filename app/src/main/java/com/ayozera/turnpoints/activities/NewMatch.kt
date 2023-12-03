@@ -1,8 +1,11 @@
 package com.ayozera.turnpoints.activities
 
 import android.os.Build
+import android.text.Layout
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -13,6 +16,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
@@ -37,6 +41,7 @@ import androidx.compose.material3.Slider
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterVertically
+import androidx.compose.ui.Alignment.Companion.Start
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -50,6 +55,7 @@ import com.ayozera.turnpoints.models.DataUp.Companion.playerLoader
 import com.ayozera.turnpoints.models.GameType
 import com.ayozera.turnpoints.models.Match
 import com.ayozera.turnpoints.models.Player
+import com.ayozera.turnpoints.ui.theme.jugador9
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -59,7 +65,7 @@ import java.time.ZoneId
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun PantallaNueva(navController: NavHostController) {
+fun NewMatch(navController: NavHostController) {
     val context = LocalContext.current
     val players = playerLoader(context)
     val games = gameLoader(context)
@@ -87,6 +93,28 @@ fun PantallaNueva(navController: NavHostController) {
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier.verticalScroll(rememberScrollState())
     ) {
+        Spacer(modifier = Modifier.size(30.dp))
+        Row (modifier = Modifier.align(Start))
+        {
+            IconButton(
+                onClick = { navController.popBackStack() },
+                modifier = Modifier.padding(start = 20.dp)
+            ) {
+                Box(
+                    modifier = Modifier
+                        .background(color = jugador9)
+                        .size(48.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.ArrowBack,
+                        contentDescription = "Atrás",
+                        modifier = Modifier.align(Alignment.Center),
+                        tint = Color.White
+                    )
+                }
+            }
+            Text(text = "Guardar Nueva Partida", modifier = Modifier.align(CenterVertically).padding(start = 50.dp))
+        }
         Spacer(modifier = Modifier.size(30.dp))
         PlayerSelection(players) { onPlayerSelected ->
             player = onPlayerSelected

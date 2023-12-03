@@ -9,7 +9,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.ayozera.turnpoints.activities.PantallaNueva
+import com.ayozera.turnpoints.activities.NewMatch
 import com.ayozera.turnpoints.activities.ShowInformation
 import com.ayozera.turnpoints.activities.ShowMainScreen
 
@@ -25,7 +25,7 @@ fun NavigationGraph() {
         }
 
         composable(Routs.NuevaPartida.rout){
-            PantallaNueva(navController = navController)
+            NewMatch(navController = navController)
         }
 
         composable(Routs.GameInformation.rout + "/{game}", arguments = listOf(navArgument("game") {

@@ -1,6 +1,6 @@
 
 Pablo
-Cluedo
+cluedo
 ROLE_PLAYING
 Amelia
 32
@@ -9,7 +9,7 @@ Amelia
 2023
 
 Yanira
-Monopoly
+monopoly
 BOARD
 El profesor
 53
@@ -18,7 +18,7 @@ El profesor
 2023
 
 María
-Cluedo
+cluedo
 ROLE_PLAYING
 Shurnoap
 48
