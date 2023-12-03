@@ -13,6 +13,7 @@ import com.ayozera.turnpoints.activities.Login
 import com.ayozera.turnpoints.activities.NewMatch
 import com.ayozera.turnpoints.activities.ShowInformation
 import com.ayozera.turnpoints.activities.ShowMainScreen
+import com.ayozera.turnpoints.activities.Signup
 import com.ayozera.turnpoints.activities.Welcome
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -36,6 +37,10 @@ fun NavigationGraph() {
         
         composable(Routs.Login.rout){
             Login(navController = navController)
+        }
+
+        composable(Routs.Signup.rout){
+            Signup(navController = navController)
         }
 
         composable(Routs.GameInformation.rout + "/{game}", arguments = listOf(navArgument("game") {

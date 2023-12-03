@@ -27,25 +27,29 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.ayozera.turnpoints.R
+import com.ayozera.turnpoints.models.Credential
 import com.ayozera.turnpoints.models.DataUp
+import com.ayozera.turnpoints.models.DataUp.Companion.writeCredential
 import com.ayozera.turnpoints.navigation.Routs
 import com.ayozera.turnpoints.ui.theme.Fondo
 import com.ayozera.turnpoints.ui.theme.LetraClara
 import com.ayozera.turnpoints.ui.theme.LetraOscura
 
 @Composable
-fun Login(navController: NavHostController) {
-
+fun Signup(navController: NavHostController) {
     var textUser by remember { mutableStateOf("") }
     var textPassword by remember { mutableStateOf("") }
+    var textPassword2 by remember { mutableStateOf("") }
     val keys = DataUp.credentialLoader(LocalContext.current)
-    var openDialog by remember { mutableStateOf(false) }
+    var openDialogExits by remember { mutableStateOf(false) }
+    var openDialogPasswords by remember { mutableStateOf(false) }
 
+    val context = LocalContext.current
     Column(
-        verticalArrangement = Arrangement.SpaceBetween,
         horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.SpaceBetween,
         modifier = Modifier.fillMaxWidth()
-            .background(color = Fondo),
+            .background(color = Fondo)
     ) {
         Row(
             horizontalArrangement = Arrangement.Center,
@@ -57,56 +61,77 @@ fun Login(navController: NavHostController) {
         ) {
             Text(
                 text = "Turn & Points",
+                color = LetraOscura
             )
             Image(
                 painter = painterResource(id = R.drawable.dados_removebg_preview),
                 contentDescription = "Logo con unos dados"
             )
         }
-        Column (
-            modifier = Modifier.fillMaxHeight(0.9f)
-                .background(color = Fondo),
+
+
+        Column(
             verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier
+                .fillMaxHeight(0.90f)
         ) {
+
             Text(text = "Introduzca nombre de usuario")
             TextField(value = textUser, onValueChange = { textUser = it })
-            Spacer(modifier = Modifier.padding(20.dp))
+            Spacer(modifier = Modifier.padding(15.dp))
             Text(text = "Introduzca su contraseña")
             TextField(
                 value = textPassword,
                 onValueChange = { textPassword = it },
                 visualTransformation = PasswordVisualTransformation()
             )
+            Spacer(modifier = Modifier.padding(15.dp))
+            Text(text = "Repita su contraseña")
+            TextField(
+                value = textPassword2,
+                onValueChange = { textPassword2 = it },
+                visualTransformation = PasswordVisualTransformation()
+            )
             Spacer(modifier = Modifier.padding(50.dp))
             Button(onClick = {
-                var access = false
+                var alreadyExits = false
                 keys.forEach {
-                    if (it.user == textUser && it.password == textPassword) {
-                        access = true
+                    if (it.user == textUser) {
+                        alreadyExits = true
                     }
                 }
-                if (access) {
-                    navController.navigate(Routs.MainScreen.rout)
+                if (!alreadyExits) {
+                    if (textPassword == textPassword2) {
+                        writeCredential(Credential(textUser, textPassword), context)
+                        navController.navigate(Routs.MainScreen.rout)
+                    } else {
+                        openDialogPasswords = true
+                    }
                 } else {
-                    openDialog = true
+                    openDialogExits = true
                 }
 
             }) {
-                Text(text = "Iniciar Sesión")
+                Text(text = "Crear Cuenta")
             }
         }
 
-        if (openDialog) {
-            AccessDialogError {
-                openDialog = false
+        if (openDialogExits) {
+            UserAlreadyExitsDialog {
+                openDialogExits = false
+            }
+        }
+        if (openDialogPasswords) {
+            SignupDialogError {
+                openDialogPasswords = false
             }
         }
     }
 }
 
 @Composable
-fun AccessDialogError(onDismissClick: () -> Unit) {
+fun SignupDialogError(onDismissClick: () -> Unit) {
     MaterialTheme {
         Column {
             androidx.compose.material3.AlertDialog(
@@ -117,7 +142,34 @@ fun AccessDialogError(onDismissClick: () -> Unit) {
                     Text(text = "Error")
                 },
                 text = {
-                    Text("Asegúrese de que el usuario y la contraseña son correctas")
+                    Text("Las contraseñas no coinciden")
+                },
+                confirmButton = {
+                    Button(
+                        onClick = {
+                            onDismissClick()
+                        }) {
+                        Text("Entendido")
+                    }
+                },
+            )
+        }
+    }
+}
+
+@Composable
+fun UserAlreadyExitsDialog(onDismissClick: () -> Unit) {
+    MaterialTheme {
+        Column {
+            androidx.compose.material3.AlertDialog(
+                onDismissRequest = {
+                    onDismissClick()
+                },
+                title = {
+                    Text(text = "Error")
+                },
+                text = {
+                    Text("El nombre de usuario ya está en uso")
                 },
                 confirmButton = {
                     Button(
