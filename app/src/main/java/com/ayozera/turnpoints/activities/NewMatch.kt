@@ -61,6 +61,7 @@ import com.ayozera.turnpoints.models.Match
 import com.ayozera.turnpoints.models.Player
 import com.ayozera.turnpoints.ui.theme.Fondo
 import com.ayozera.turnpoints.ui.theme.FondoSearchBar
+import com.ayozera.turnpoints.ui.theme.LetraClara
 import com.ayozera.turnpoints.ui.theme.LetraOscura
 import com.ayozera.turnpoints.ui.theme.jugador9
 import kotlinx.coroutines.Dispatchers
@@ -123,7 +124,8 @@ fun NewMatchInPortraitMode(navController: NavHostController) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 16.dp, start = 16.dp),
+                .background(color = LetraClara)
+                .padding(16.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -297,11 +299,11 @@ fun NewMatchInLandscapeMode(navController: NavHostController) {
                 PlayerSelection(players) { onPlayerSelected ->
                     player = onPlayerSelected
                 }
-                Spacer(modifier = Modifier.height(8.dp)) // Espacio entre el jugador y el oponente
+                Spacer(modifier = Modifier.height(8.dp))
                 OpponentSelection(players) { onOpponentSelected ->
                     opponent = onOpponentSelected
                 }
-                Spacer(modifier = Modifier.height(8.dp)) // Espacio entre el oponente y el juego
+                Spacer(modifier = Modifier.height(8.dp))
                 GameSelection(games) { onGameSelected ->
                     game = onGameSelected
                 }
@@ -457,7 +459,7 @@ fun TypeSelection(gameTypes: List<GameType>, onTypeSelection: (GameType) -> Unit
     var selectedGameType by remember { mutableStateOf("") }
     Column {
         Text(
-            text = "Selecciona uno o más tipos de juego",
+            text = "Selecciona el tipo de juego",
             modifier = Modifier.padding(63.dp, 0.dp, 0.dp, 0.dp),
             fontSize = 16.sp,
             fontFamily = FontFamily.Serif,
