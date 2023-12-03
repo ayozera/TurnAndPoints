@@ -405,7 +405,7 @@ fun AlertDialogError(onDismissClick: () -> Unit) {
                     Text(text = "Error")
                 },
                 text = {
-                    Text("Se deben cumplimentar todos los campos")
+                    Text("Se deben llenar todos los campos")
                 },
                 confirmButton = {
                     Button(
