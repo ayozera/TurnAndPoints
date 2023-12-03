@@ -68,9 +68,17 @@ fun ShowMainScreen(navController: NavHostController) {
 
     val showCheckbox = remember { mutableStateOf(false) }
     var filtroJuegos by remember { mutableStateOf("") }
-    val delete = remember { mutableStateOf(false) }
+    var delete by remember { mutableStateOf(false) }
     var matches = DataUp.matchLoader(LocalContext.current)
     val players = DataUp.playerLoader(LocalContext.current)
+    var matchesDeleted = remember { mutableStateOf(ArrayList<Match>()) }
+
+    if (delete) {
+        matchesDeleted.value.forEach {
+            matches.remove(it)
+        }
+        DataUp.overwrite(LocalContext.current, matches)
+    }
 
     Column(
         modifier = Modifier
@@ -90,6 +98,9 @@ fun ShowMainScreen(navController: NavHostController) {
                     .padding(16.dp)
                     .align(Alignment.CenterHorizontally)
             )
+            ButtonsAddAndDelete(navController, showCheckbox) { onDeleteClick ->
+                delete = onDeleteClick
+            }
             SearchBar() {
                 filtroJuegos = it
             }
@@ -99,18 +110,25 @@ fun ShowMainScreen(navController: NavHostController) {
                     PlayerCard(
                         showCheckbox.value,
                         filtroJuegos,
-                        delete,
                         match,
                         players,
                         { onClick -> navController.navigate(Routs.GameInformation.rout + "/$onClick") },
-                        { onDeleteClick -> delete.value = onDeleteClick }
+                        { onChekedClick ->
+                            run {
+                                var found = false
+                                matchesDeleted.value.forEach {
+                                    if (it == onChekedClick) {
+                                        found = true
+                                    }
+                                }
+                                if (!found) {
+                                    matchesDeleted.value.add(onChekedClick)
+                                }
+                            }
+                        }
                     )
                 }
             }
-
-        }
-        ButtonsAddAndDelete(navController, showCheckbox) { onDeleteClick ->
-            delete.value = onDeleteClick
         }
     }
 }
@@ -201,11 +219,10 @@ fun SearchBar(onSearchSelected: (String) -> Unit) {
 fun PlayerCard(
     showCheckbox: Boolean,
     filtroJuegos: String,
-    delete: MutableState<Boolean>,
     match: Match,
     players: List<Player>,
     onClick: (String) -> Unit,
-    onDeleteClick: (Boolean) -> Unit
+    onChekedClick: (Match) -> Unit
 ) {
 
     if (match.game.contains(filtroJuegos)) {
@@ -281,7 +298,7 @@ fun PlayerCard(
                             checked = isChecked,
                             onCheckedChange = {
                                 isChecked = it
-                                onDeleteClick(isChecked)
+                                onChekedClick(match)
 
                             },
                             enabled = true,
