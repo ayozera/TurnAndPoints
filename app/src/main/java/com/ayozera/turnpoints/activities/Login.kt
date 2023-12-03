@@ -20,6 +20,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.ayozera.turnpoints.R
@@ -56,9 +57,13 @@ fun Login(navController: NavHostController) {
     ) {
 
         Text(text = "Introduzca nombre de usuario")
-        TextField(value = textUser, onValueChange = {textUser = it})
+        TextField(value = textUser, onValueChange = { textUser = it })
         Text(text = "Introduzca su contraseña")
-        TextField(value = textPassword, onValueChange = {textPassword = it})
+        TextField(
+            value = textPassword,
+            onValueChange = { textPassword = it },
+            visualTransformation = PasswordVisualTransformation()
+        )
         Button(onClick = {
             var access = false
             keys.forEach {

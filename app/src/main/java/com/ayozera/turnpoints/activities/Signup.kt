@@ -20,6 +20,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.ayozera.turnpoints.R
@@ -31,7 +32,7 @@ import com.ayozera.turnpoints.ui.theme.LetraClara
 import com.ayozera.turnpoints.ui.theme.LetraOscura
 
 @Composable
-fun Signup (navController: NavHostController) {
+fun Signup(navController: NavHostController) {
     Row(
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically
@@ -61,11 +62,19 @@ fun Signup (navController: NavHostController) {
     ) {
 
         Text(text = "Introduzca nombre de usuario")
-        TextField(value = textUser, onValueChange = {textUser = it})
+        TextField(value = textUser, onValueChange = { textUser = it })
         Text(text = "Introduzca su contraseña")
-        TextField(value = textPassword, onValueChange = {textPassword = it})
+        TextField(
+            value = textPassword,
+            onValueChange = { textPassword = it },
+            visualTransformation = PasswordVisualTransformation()
+        )
         Text(text = "Repita su contraseña")
-        TextField(value = textPassword2, onValueChange = {textPassword2 = it})
+        TextField(
+            value = textPassword2,
+            onValueChange = { textPassword2 = it },
+            visualTransformation = PasswordVisualTransformation()
+        )
         Button(onClick = {
             var alreadyExits = false
             keys.forEach {
@@ -74,7 +83,7 @@ fun Signup (navController: NavHostController) {
                 }
             }
             if (!alreadyExits) {
-                if (textPassword == textPassword2){
+                if (textPassword == textPassword2) {
                     writeCredential(Credential(textUser, textPassword), context)
                     navController.navigate(Routs.MainScreen.rout)
                 } else {
