@@ -108,7 +108,6 @@ fun ShowMainScreen(navController: NavHostController) {
             matchesDeleted
         )
     }
-
 }
 
 @Composable
@@ -147,7 +146,6 @@ fun MainScreenPortraitMode(
             delete.value = onDeleteClick
         }
     }
-
 }
 
 @Composable
@@ -251,7 +249,6 @@ fun ShowCardsColumn(
             )
         }
     }
-
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -454,7 +451,7 @@ fun ButtonsAddAndDelete(
         ExtendedFloatingActionButton(
             onClick = {
                 if (!showCheckbox.value) {
-                    navController.navigate(Routs.NuevaPartida.rout)
+                    navController.navigate(Routs.NewMatch.rout)
                 }
             }, containerColor = if (!showCheckbox.value) FondoSearchBar else PurpleGrey40
         ) {
