@@ -5,6 +5,9 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.Divider
@@ -28,75 +31,91 @@ import com.ayozera.turnpoints.models.Credential
 import com.ayozera.turnpoints.models.DataUp
 import com.ayozera.turnpoints.models.DataUp.Companion.writeCredential
 import com.ayozera.turnpoints.navigation.Routs
+import com.ayozera.turnpoints.ui.theme.Fondo
 import com.ayozera.turnpoints.ui.theme.LetraClara
 import com.ayozera.turnpoints.ui.theme.LetraOscura
 
 @Composable
 fun Signup(navController: NavHostController) {
-    Row(
-        horizontalArrangement = Arrangement.Center,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Text(
-            text = "Turn & Points",
-            modifier = Modifier
-                .background(LetraClara)
-                .padding(30.dp)
-        )
-        Image(
-            painter = painterResource(id = R.drawable.dados_removebg_preview),
-            contentDescription = "Logo con unos dados"
-        )
-    }
     var textUser by remember { mutableStateOf("") }
     var textPassword by remember { mutableStateOf("") }
     var textPassword2 by remember { mutableStateOf("") }
     val keys = DataUp.credentialLoader(LocalContext.current)
     var openDialogExits by remember { mutableStateOf(false) }
     var openDialogPasswords by remember { mutableStateOf(false) }
+
     val context = LocalContext.current
-
     Column(
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.SpaceBetween,
+        modifier = Modifier.fillMaxWidth()
+            .background(color = Fondo)
     ) {
-
-        Text(text = "Introduzca nombre de usuario")
-        TextField(value = textUser, onValueChange = { textUser = it })
-        Text(text = "Introduzca su contraseña")
-        TextField(
-            value = textPassword,
-            onValueChange = { textPassword = it },
-            visualTransformation = PasswordVisualTransformation()
-        )
-        Text(text = "Repita su contraseña")
-        TextField(
-            value = textPassword2,
-            onValueChange = { textPassword2 = it },
-            visualTransformation = PasswordVisualTransformation()
-        )
-        Button(onClick = {
-            var alreadyExits = false
-            keys.forEach {
-                if (it.user == textUser) {
-                    alreadyExits = true
-                }
-            }
-            if (!alreadyExits) {
-                if (textPassword == textPassword2) {
-                    writeCredential(Credential(textUser, textPassword), context)
-                    navController.navigate(Routs.MainScreen.rout)
-                } else {
-                    openDialogPasswords = true
-                }
-            } else {
-                openDialogExits = true
-            }
-
-        }) {
-            Text(text = "Crear Cuenta")
+        Row(
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .fillMaxHeight(0.10f)
+                .background(LetraClara)
+                .fillMaxWidth()
+        ) {
+            Text(
+                text = "Turn & Points",
+                color = LetraOscura
+            )
+            Image(
+                painter = painterResource(id = R.drawable.dados_removebg_preview),
+                contentDescription = "Logo con unos dados"
+            )
         }
-        Divider(thickness = 2.dp, color = LetraOscura)
+
+
+        Column(
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier
+                .fillMaxHeight(0.90f)
+        ) {
+
+            Text(text = "Introduzca nombre de usuario")
+            TextField(value = textUser, onValueChange = { textUser = it })
+            Spacer(modifier = Modifier.padding(15.dp))
+            Text(text = "Introduzca su contraseña")
+            TextField(
+                value = textPassword,
+                onValueChange = { textPassword = it },
+                visualTransformation = PasswordVisualTransformation()
+            )
+            Spacer(modifier = Modifier.padding(15.dp))
+            Text(text = "Repita su contraseña")
+            TextField(
+                value = textPassword2,
+                onValueChange = { textPassword2 = it },
+                visualTransformation = PasswordVisualTransformation()
+            )
+            Spacer(modifier = Modifier.padding(50.dp))
+            Button(onClick = {
+                var alreadyExits = false
+                keys.forEach {
+                    if (it.user == textUser) {
+                        alreadyExits = true
+                    }
+                }
+                if (!alreadyExits) {
+                    if (textPassword == textPassword2) {
+                        writeCredential(Credential(textUser, textPassword), context)
+                        navController.navigate(Routs.MainScreen.rout)
+                    } else {
+                        openDialogPasswords = true
+                    }
+                } else {
+                    openDialogExits = true
+                }
+
+            }) {
+                Text(text = "Crear Cuenta")
+            }
+        }
 
         if (openDialogExits) {
             UserAlreadyExitsDialog {
