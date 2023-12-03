@@ -35,6 +35,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.ayozera.turnpoints.ui.theme.Fondo
+import com.ayozera.turnpoints.ui.theme.LetraClara
 import com.ayozera.turnpoints.ui.theme.LetraOscura
 import com.ayozera.turnpoints.ui.theme.Rojo
 import com.ayozera.turnpoints.ui.theme.jugador9
@@ -62,10 +63,12 @@ fun ShowInformationInPortraitMode(
 ) {
     Column(modifier = Modifier.background(color = Fondo)) {
 
+
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 16.dp, start = 16.dp)
+                .background(color = LetraClara)
+                .padding(16.dp)
         ) {
             ArrowBackButton(navController)
             GameTitle(match)
@@ -74,6 +77,7 @@ fun ShowInformationInPortraitMode(
         GameInformation(match)
     }
 }
+
 
 @Composable
 fun ShowInformationInLandscapeMode(
@@ -92,9 +96,11 @@ fun ShowInformationInLandscapeMode(
             }
             GameImage(game)
         }
-        Column(modifier = Modifier
-            .weight(1f)
-            .padding(16.dp)) {
+        Column(
+            modifier = Modifier
+                .weight(1f)
+                .padding(16.dp)
+        ) {
             GameInformation(game)
         }
     }

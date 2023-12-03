@@ -63,6 +63,7 @@ import com.ayozera.turnpoints.models.Player
 import com.ayozera.turnpoints.navigation.Routs
 import com.ayozera.turnpoints.ui.theme.Fondo
 import com.ayozera.turnpoints.ui.theme.FondoSearchBar
+import com.ayozera.turnpoints.ui.theme.LetraClara
 import com.ayozera.turnpoints.ui.theme.LetraOscura
 import com.ayozera.turnpoints.ui.theme.PurpleGrey40
 import com.ayozera.turnpoints.ui.theme.letrasSearchBar
@@ -127,11 +128,14 @@ fun MainScreenPortraitMode(
     ) {
         Column(
             modifier = Modifier.weight(1f),
-            verticalArrangement = Arrangement.Top
         ) {
+            Column (Modifier.fillMaxWidth()
+                .background(color = LetraClara)){
             WelcomeText()
+
             SearchBar() {
                 filtroJuegos.value = it
+            }
             }
             ShowCardsColumn(
                 matches,
@@ -172,7 +176,11 @@ fun MainScreenLandscapeMode(
             verticalArrangement = Arrangement.SpaceBetween,
 
             ) {
-            WelcomeText()
+            Row (Modifier.fillMaxWidth()
+                .background(color = LetraClara)){
+
+                WelcomeText()
+            }
             SearchBar() {
                 filtroJuegos.value = it
             }
