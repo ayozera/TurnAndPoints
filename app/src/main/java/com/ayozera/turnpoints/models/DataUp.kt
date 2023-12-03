@@ -204,6 +204,13 @@ class DataUp {
             return keyList
         }
 
+        fun writeCredential(key: Credential, context: Context) {
+            val content = "\n${key.user}\n${key.password}"
+            val writer: FileOutputStream =
+                context.openFileOutput("credential.txt", Context.MODE_APPEND)
+            writer.write(content.toByteArray())
+            writer.close()
+        }
         fun writer(match: Match, context: Context) {
             val content = "\n${match.player}\n${match.game}\n${match.type}\n" +
                     "${match.opponent}\n${match.score}\n${match.day}\n${match.month}\n${match.year}\n"

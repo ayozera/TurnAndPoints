@@ -5,5 +5,6 @@ sealed class Routs(val rout : String) {
     object NewMatch : Routs("newMatch")
     object Welcome : Routs("welcome")
     object Login : Routs("login")
+    object Signup : Routs("signup")
     object GameInformation : Routs("gameInformation")
 }

@@ -35,7 +35,7 @@ fun Welcome (navController: NavHostController) {
         Button(onClick = { navController.navigate(Routs.Login.rout) }) {
             Text(text = "Iniciar Sesión")
         }
-        Button(onClick = { /*TODO*/ }) {
+        Button(onClick = { navController.navigate(Routs.Signup.rout) }) {
             Text(text = "Crear Cuenta")
         }
     }
