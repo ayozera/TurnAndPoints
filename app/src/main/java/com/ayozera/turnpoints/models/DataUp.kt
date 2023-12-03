@@ -1,6 +1,7 @@
 package com.ayozera.turnpoints.models
 
 import android.content.Context
+import androidx.compose.ui.graphics.Color
 import java.io.BufferedReader
 import java.io.BufferedWriter
 import java.io.File
@@ -71,17 +72,18 @@ class DataUp {
                 var counter = -1
                 var player = ""
                 var avatar = ""
-
+                var color = Color.Red
 
                 reader.forEachLine { line ->
                     if (line.isNotBlank()) {
                         counter++
                         when (counter) {
                             0 -> player = line
-                            1 -> {
+                            1 -> color = Color(android.graphics.Color.parseColor(line))
+                            2 -> {
                                 avatar = line
                                 counter = -1
-                                playerList.add(Player(player, Util.randomColor(), avatar))
+                                playerList.add(Player(player, color, avatar))
                             }
                         }
                     }
