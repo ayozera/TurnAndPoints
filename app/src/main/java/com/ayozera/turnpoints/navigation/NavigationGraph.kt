@@ -20,7 +20,7 @@ import com.ayozera.turnpoints.activities.Welcome
 fun NavigationGraph() {
     val navController : NavHostController = rememberNavController()
 
-    NavHost(navController = navController, startDestination = Routs.MainScreen.rout) {
+    NavHost(navController = navController, startDestination = Routs.Welcome.rout) {
 
         composable(Routs.MainScreen.rout){
             ShowMainScreen(navController = navController)

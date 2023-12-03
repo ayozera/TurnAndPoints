@@ -14,6 +14,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.ayozera.turnpoints.R
+import com.ayozera.turnpoints.navigation.Routs
 import com.ayozera.turnpoints.ui.theme.LetraOscura
 
 @Composable
@@ -31,7 +32,7 @@ fun Welcome (navController: NavHostController) {
         Image(painter = painterResource(id = R.drawable.dados_removebg_preview),
             contentDescription = "Logo con unos dados")
         Text(text = "Bienvenid@")
-        Button(onClick = { /*TODO*/ }) {
+        Button(onClick = { navController.navigate(Routs.Login.rout) }) {
             Text(text = "Iniciar Sesión")
         }
         Button(onClick = { /*TODO*/ }) {

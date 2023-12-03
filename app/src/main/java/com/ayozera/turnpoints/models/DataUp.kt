@@ -78,7 +78,6 @@ class DataUp {
                         counter++
                         when (counter) {
                             0 -> player = line
-
                             1 -> {
                                 avatar = line
                                 counter = -1
@@ -158,6 +157,51 @@ class DataUp {
                 e.printStackTrace()
             }
             return matchesList
+        }
+
+        private fun credentialFirstLoader(context: Context) {
+            val assetManager = context.assets
+            val inputStream = assetManager.open("credential.txt")
+            val reader = BufferedReader(InputStreamReader(inputStream))
+            val writer: FileOutputStream =
+                context.openFileOutput("credential.txt", Context.MODE_APPEND)
+            reader.forEachLine { line ->
+                writer.write("$line\n".toByteArray())
+            }
+            reader.close()
+            writer.close()
+        }
+        fun credentialLoader(context: Context): List<Credential> {
+            val keyList = ArrayList<Credential>()
+            val file = File(context.filesDir, "credential.txt")
+            try {
+                if (!file.exists()) {
+                    credentialFirstLoader(context)
+                }
+                val fileInput = FileInputStream(file)
+                val reader = BufferedReader(InputStreamReader(fileInput))
+                var counter = -1
+                var user = ""
+                var key = ""
+
+
+                reader.forEachLine { line ->
+                    if (line.isNotBlank()) {
+                        counter++
+                        when (counter) {
+                            0 -> user = line
+                            1 -> {
+                                key = line
+                                counter = -1
+                                keyList.add(Credential(user, key))
+                            }
+                        }
+                    }
+                }
+            } catch (e: IOException) {
+                e.printStackTrace()
+            }
+            return keyList
         }
 
         fun writer(match: Match, context: Context) {
