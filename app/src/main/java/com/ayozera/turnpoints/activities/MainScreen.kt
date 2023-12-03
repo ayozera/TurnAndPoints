@@ -1,21 +1,23 @@
 package com.ayozera.turnpoints.activities
 
+import android.content.res.Configuration
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.icons.filled.Clear
@@ -37,6 +39,7 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -44,6 +47,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
@@ -66,14 +70,14 @@ import com.ayozera.turnpoints.ui.theme.letrasSearchBar
 @Composable
 fun ShowMainScreen(navController: NavHostController) {
 
-    val showCheckbox = remember { mutableStateOf(false) }
-    var filtroJuegos by remember { mutableStateOf("") }
-    val delete = remember { mutableStateOf(false) }
+    val showCheckbox = rememberSaveable { mutableStateOf(false) }
+    var filtroJuegos = rememberSaveable { mutableStateOf("") }
+    val delete = rememberSaveable { mutableStateOf(false) }
     var matches = DataUp.matchLoader(LocalContext.current)
     val players = DataUp.playerLoader(LocalContext.current)
-    var matchesDeleted = remember { mutableStateOf(ArrayList<Match>()) }
+    var matchesDeleted = rememberSaveable { mutableStateOf(ArrayList<Match>()) }
 
-    if (delete) {
+    if (delete.value) {
         matchesDeleted.value.forEach {
             matches.remove(it)
         }
@@ -84,9 +88,25 @@ fun ShowMainScreen(navController: NavHostController) {
     val isPortrait = configuration.orientation == Configuration.ORIENTATION_PORTRAIT
 
     if (isPortrait) {
-        MainScreenPortraitMode(showCheckbox, filtroJuegos, delete, matches, players, navController)
+        MainScreenPortraitMode(
+            showCheckbox,
+            filtroJuegos,
+            delete,
+            matches,
+            players,
+            navController,
+            matchesDeleted
+        )
     } else {
-        MainScreenLandscapeMode(showCheckbox, filtroJuegos, delete, matches, players, navController)
+        MainScreenLandscapeMode(
+            showCheckbox,
+            filtroJuegos,
+            delete,
+            matches,
+            players,
+            navController,
+            matchesDeleted
+        )
     }
 
 }
@@ -98,7 +118,8 @@ fun MainScreenPortraitMode(
     delete: MutableState<Boolean>,
     matches: ArrayList<Match>,
     players: List<Player>,
-    navController: NavHostController
+    navController: NavHostController,
+    matchesDeleted: MutableState<ArrayList<Match>>
 ) {
 
     Column(
@@ -113,9 +134,14 @@ fun MainScreenPortraitMode(
             SearchBar() {
                 filtroJuegos.value = it
             }
-
-            ShowCardsColumn(matches, players, showCheckbox, filtroJuegos.value, delete, navController)
-
+            ShowCardsColumn(
+                matches,
+                players,
+                showCheckbox,
+                filtroJuegos.value,
+                navController,
+                matchesDeleted
+            )
         }
         ButtonsAddAndDelete(navController, showCheckbox) { onDeleteClick ->
             delete.value = onDeleteClick
@@ -131,7 +157,8 @@ fun MainScreenLandscapeMode(
     delete: MutableState<Boolean>,
     matches: ArrayList<Match>,
     players: List<Player>,
-    navController: NavHostController
+    navController: NavHostController,
+    matchesDeleted: MutableState<ArrayList<Match>>
 ) {
 
     Row(
@@ -145,7 +172,7 @@ fun MainScreenLandscapeMode(
                 .padding(16.dp),
             verticalArrangement = Arrangement.SpaceBetween,
 
-        ) {
+            ) {
             WelcomeText()
             SearchBar() {
                 filtroJuegos.value = it
@@ -161,7 +188,14 @@ fun MainScreenLandscapeMode(
                 .weight(1f)
                 .padding(16.dp)
         ) {
-            ShowCardsColumn(matches, players, showCheckbox, filtroJuegos.value, delete, navController)
+            ShowCardsColumn(
+                matches,
+                players,
+                showCheckbox,
+                filtroJuegos.value,
+                navController,
+                matchesDeleted
+            )
         }
     }
 }
@@ -184,51 +218,36 @@ fun WelcomeText() {
     }
 }
 
-            LazyColumn {
-                items(matches) { match ->
-                    PlayerCard(
-                        showCheckbox.value,
-                        filtroJuegos,
-                        match,
-                        players,
-                        { onClick -> navController.navigate(Routs.GameInformation.rout + "/$onClick") },
-                        { onChekedClick ->
-                            run {
-                                var found = false
-                                matchesDeleted.value.forEach {
-                                    if (it == onChekedClick) {
-                                        found = true
-                                    }
-                                }
-                                if (!found) {
-                                    matchesDeleted.value.add(onChekedClick)
-                                }
-                            }
-                        }
-                    )
-                }
-            }
-        }
-    }
 @Composable
 fun ShowCardsColumn(
     matches: ArrayList<Match>,
     players: List<Player>,
     showCheckbox: MutableState<Boolean>,
     filtroJuegos: String,
-    delete: MutableState<Boolean>,
-    navController: NavHostController
+    navController: NavHostController,
+    matchesDeleted: MutableState<ArrayList<Match>>
 ) {
     LazyColumn {
         items(matches) { match ->
             PlayerCard(
                 showCheckbox.value,
                 filtroJuegos,
-                delete,
                 match,
                 players,
                 { onClick -> navController.navigate(Routs.GameInformation.rout + "/$onClick") },
-                { onDeleteClick -> delete.value = onDeleteClick }
+                { onChekedClick ->
+                    run {
+                        var found = false
+                        matchesDeleted.value.forEach {
+                            if (it == onChekedClick) {
+                                found = true
+                            }
+                        }
+                        if (!found) {
+                            matchesDeleted.value.add(onChekedClick)
+                        }
+                    }
+                }
             )
         }
     }
