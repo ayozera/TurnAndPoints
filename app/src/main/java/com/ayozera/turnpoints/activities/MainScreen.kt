@@ -120,15 +120,15 @@ fun MainScreenPortraitMode(
     navController: NavHostController,
     matchesDeleted: MutableState<ArrayList<Match>>
 ) {
-
     Column(
         modifier = Modifier
             .fillMaxSize()
             .background(color = Fondo),
-        verticalArrangement = Arrangement.SpaceBetween,
-
+    ) {
+        Column(
+            modifier = Modifier.weight(1f),
+            verticalArrangement = Arrangement.Top
         ) {
-        Column {
             WelcomeText()
             SearchBar() {
                 filtroJuegos.value = it
@@ -142,13 +142,12 @@ fun MainScreenPortraitMode(
                 matchesDeleted
             )
         }
-        Row {
         ButtonsAddAndDelete(navController, showCheckbox) { onDeleteClick ->
             delete.value = onDeleteClick
         }
-        }
     }
 }
+
 
 @Composable
 fun MainScreenLandscapeMode(
