@@ -328,6 +328,7 @@ fun NewMatchInLandscapeMode(navController: NavHostController) {
             day = onDateSelected.dayOfMonth
             month = onDateSelected.monthValue
             year = onDateSelected.year
+
         }
 
         Row(
