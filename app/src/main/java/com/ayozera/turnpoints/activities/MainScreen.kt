@@ -142,8 +142,10 @@ fun MainScreenPortraitMode(
                 matchesDeleted
             )
         }
+        Row {
         ButtonsAddAndDelete(navController, showCheckbox) { onDeleteClick ->
             delete.value = onDeleteClick
+        }
         }
     }
 }
