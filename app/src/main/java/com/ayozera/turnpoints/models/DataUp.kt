@@ -2,15 +2,17 @@ package com.ayozera.turnpoints.models
 
 import android.content.Context
 import java.io.BufferedReader
+import java.io.BufferedWriter
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
+import java.io.FileWriter
 import java.io.IOException
 import java.io.InputStreamReader
 
 class DataUp {
     companion object {
-        fun gameFirstLoader(context: Context) {
+        private fun gameFirstLoader(context: Context) {
             val assetManager = context.assets
             val inputStream = assetManager.open("games.txt")
             val reader = BufferedReader(InputStreamReader(inputStream))
@@ -44,7 +46,7 @@ class DataUp {
             return gamesList
         }
 
-        fun playerFirstLoader(context: Context) {
+        private fun playerFirstLoader(context: Context) {
             val assetManager = context.assets
             val inputStream = assetManager.open("players.txt")
             val reader = BufferedReader(InputStreamReader(inputStream))
@@ -91,7 +93,7 @@ class DataUp {
             return playerList
         }
 
-        fun matchFirstloader(context: Context) {
+        private fun matchFirstloader(context: Context) {
             val assetManager = context.assets
             val inputStream = assetManager.open("matches.txt")
             val reader = BufferedReader(InputStreamReader(inputStream))
@@ -115,7 +117,6 @@ class DataUp {
                 val reader = BufferedReader(InputStreamReader(fileInput))
                 var counter = -1
                 var player = ""
-                var avatar = ""
                 var game = ""
                 var type = ""
                 var opponent = ""
@@ -123,7 +124,6 @@ class DataUp {
                 var day = 0
                 var month = 0
                 var year = 0
-                val players = playerLoader(context)
                 reader.forEachLine { line ->
                     if (line.isNotBlank()) {
                         counter++
@@ -138,11 +138,6 @@ class DataUp {
                             7 -> {
                                 year = line.toInt()
                                 counter = -1
-                                /*                                players.forEach {
-                                                                    if (it.name == player) {
-                                                                        avatar = it.avatar
-                                                                    }
-                                                                }*/
                                 matchesList.add(
                                     Match(
                                         player,
@@ -170,7 +165,31 @@ class DataUp {
                     "${match.opponent}\n${match.score}\n${match.day}\n${match.month}\n${match.year}\n"
             val writer: FileOutputStream =
                 context.openFileOutput("matches.txt", Context.MODE_APPEND)
-            writer.write("$content".toByteArray())
+            writer.write(content.toByteArray())
+            writer.close()
+        }
+
+        fun overwrite(context: Context, matches: ArrayList<Match>){
+            val file = File(context.filesDir, "matches.txt")
+            val writer = BufferedWriter(FileWriter(file))
+            matches.forEach {
+                writer.write(it.player)
+                writer.newLine()
+                writer.write(it.game)
+                writer.newLine()
+                writer.write(it.type)
+                writer.newLine()
+                writer.write(it.opponent)
+                writer.newLine()
+                writer.write(it.score.toString())
+                writer.newLine()
+                writer.write(it.day.toString())
+                writer.newLine()
+                writer.write(it.month.toString())
+                writer.newLine()
+                writer.write(it.year.toString())
+                writer.newLine()
+            }
             writer.close()
         }
     }
