@@ -10,7 +10,6 @@ val Purple40 = Color(0xFF6650a4)
 val PurpleGrey40 = Color(0xFF625b71)
 val Pink40 = Color(0xFF7D5260)
 
-
 val LetraOscura = Color(0xFF003049 )
 val LetraClara = Color(0xFF669BBC)
 val Fondo = Color(0xFFFDF0D5)
